@@ -33,7 +33,23 @@ public class main implements CommandExecutor {
         
         if(args.length >= 1) {
             switch(args[0].toLowerCase()) {
+                case "mark":
+                    //Aktiviere/Deakiviere das Markieren
+                    if(_plugin.isAllowMarking(p.getName())) {
+                        p.sendMessage("$f[$2HappyChest$f]$eDas Makieren wurde deaktiviert.");
+                        _plugin.denyMarking(p.getName());
+                    } else {
+                        p.sendMessage("$f[$2HappyChest$f]$eVerwende ein Gold Schwert zum makieren.");
+                        _plugin.allowMarking(p.getName());
+                    }
+                    break;
                 case "create":
+                    if(args.length < 2) {
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch create (ArenaName)");
+                        return true;
+                    }
+                    
+                    
                     //Erstelle eine Arena
                     break;
                 case "delete":
@@ -56,11 +72,13 @@ public class main implements CommandExecutor {
                     break;
                 default:
                     //Unbekannter Begriff an stelle 1
+                    p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove)");
+                    break;
             }
+            return true;
         }
         //Argument(e) vergessen
-        
-        
+        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove)");
         return true;
     }
     
