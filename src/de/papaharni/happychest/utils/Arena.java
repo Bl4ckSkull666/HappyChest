@@ -9,6 +9,7 @@ package de.papaharni.happychest.utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -100,5 +101,16 @@ public class Arena {
     
     public void setPos2(Location loc) {
         _pos2 = loc;
+    }
+    
+    public void reloadChests(Player p) {
+        List<Location> chest = Blocks.getChestsListU(_pos1, _pos2);
+        if(chest.size() < 2) {
+            p.sendMessage("$f[$2HappyChest$f]$c Konnte keine Truhen mehr finden.");
+            _chests = chest;
+            return;
+        }
+        _chests = chest;
+        p.sendMessage("$f[$2HappyChest$f]$eEs wurden " + chest.size() + " Truhen in dieser Arena gefunden.");
     }
 }

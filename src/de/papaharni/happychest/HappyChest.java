@@ -151,6 +151,10 @@ public class HappyChest extends JavaPlugin {
         return _areas.containsKey(a.toLowerCase());
     }
     
+    public Arena getArena(String a) {
+        return isArena(a)?_areas.get(a.toLowerCase()):null;
+    }
+    
     public void delArena(String a) {
         _areas.remove(a.toLowerCase());
     }
