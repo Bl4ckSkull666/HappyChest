@@ -23,12 +23,11 @@ public class Arena {
     List<Location> _chests = new ArrayList<>();
     List<String> _items = new ArrayList<>();
     
-    Items _item = new Items();
-    
-    public Arena(String name, Location loc1, Location loc2) {
+    public Arena(String name, Location loc1, Location loc2, List<Location> chest) {
         _name = name;
         _pos1 = loc1;
         _pos2 = loc2;
+        _chests = chest;
     }
     
     public void addChest(Location loc) {
@@ -44,7 +43,7 @@ public class Arena {
     }
     
     public void addItem(String str) {
-        if(_item.isItem(str))
+        if(Items.isItem(str))
             _items.add(str);
     }
     
@@ -54,7 +53,7 @@ public class Arena {
     
     public ItemStack getItem(int i) {
         if(i <= getItemCount())
-            return _item.getItem(_items.get(i));
+            return Items.getItem(_items.get(i));
         return null;
     }
     
@@ -65,7 +64,7 @@ public class Arena {
     public List<ItemStack> getItemStackList() {
         List<ItemStack> list = new ArrayList<>();
         for(String str: _items) {
-            ItemStack item = _item.getItem(str);
+            ItemStack item = Items.getItem(str);
             if(item != null)
                 list.add(item);
         }

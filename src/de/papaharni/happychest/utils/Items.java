@@ -21,7 +21,8 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public final class Items {
     
-    public boolean isItem(String str) {
+    
+    public static boolean isItem(String str) {
         String[] args = str.split(" ");
         if(args.length < 2) {
             HappyChest.getInstance().getLogger().log(Level.INFO, str + " hat zu wenig Argumente Mindestens : Itemname Itemmenge - sind gefordert.");
@@ -74,7 +75,7 @@ public final class Items {
         }
         return true;
     }
-    public ItemStack getItem(String str) {
+    public static ItemStack getItem(String str) {
         String[] args = str.split(" ");
         if(args.length < 2) {
             HappyChest.getInstance().getLogger().log(Level.INFO, str + " hat zu wenig Argumente Mindestens : Itemname Itemmenge - sind gefordert.");
@@ -128,7 +129,7 @@ public final class Items {
         return i;
     }
     
-    private boolean isNumeric(String str) {
+    private static boolean isNumeric(String str) {
         try {
             int num = Integer.valueOf(str);
             return true;

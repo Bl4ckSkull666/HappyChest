@@ -7,6 +7,7 @@
 package de.papaharni.happychest;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.papaharni.happychest.utils.Arena;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +26,22 @@ public class HappyChest extends JavaPlugin {
     
     private static HappyChest _instance;
     private static boolean _debugMode;
-    private static Economy economy = null;
     
+    //Arena Tasks / Arena Name = Task
     private final HashMap<String, BukkitTask> _games = new HashMap<>();
+    
+    //Zur Markierung falls kein WE vorhanden ist.
     private final List<String> _allowMark = new ArrayList<>();
     private final HashMap<String, Location> _playerMarksLeft = new HashMap<>();
     private final HashMap<String, Location> _playerMarksRight = new HashMap<>();
+    
+    //Arena Saver
+    private final HashMap<String, Arena> _areas = new HashMap<>();
+    private final HashMap<String, String> _remrequest = new HashMap<>();
+    private final HashMap<String, Long> _remrequesttime = new HashMap<>();
+    //Sonstiges - Externe Plugins
     private WorldGuardPlugin _wg;
+    private static Economy economy = null;
     
     @Override
     public void onEnable() {
@@ -105,6 +115,8 @@ public class HappyChest extends JavaPlugin {
                 _playerMarksRight.remove(p);
                 break;
             default:
+                _playerMarksLeft.remove(p);
+                _playerMarksRight.remove(p);
                 break;
         }
     }
@@ -131,5 +143,37 @@ public class HappyChest extends JavaPlugin {
         }
     }
     
+    public void addArena(Arena a) {
+        _areas.put(a.getName().toLowerCase(), a);
+    }
     
+    public boolean isArena(String a) {
+        return _areas.containsKey(a.toLowerCase());
+    }
+    
+    public void delArena(String a) {
+        _areas.remove(a.toLowerCase());
+    }
+    
+    public void addRemRequest(String p, String a) {
+        _remrequest.put(p.toLowerCase(), a.toLowerCase());
+        _remrequesttime.put(p.toLowerCase(), System.currentTimeMillis());
+    }
+    
+    public String getRemRequest(String p) {
+        return (isRemRequest(p.toLowerCase()))?_remrequest.get(p.toLowerCase()):"";
+    }
+    
+    public boolean isRemRequest(String p) {
+        return _remrequest.containsKey(p.toLowerCase());
+    }
+    
+    public void delRemRequest(String p) {
+        _remrequest.remove(p.toLowerCase());
+        _remrequesttime.remove(p.toLowerCase());
+    }
+    
+    public Long getRemRequestTime(String p) {
+        return (_remrequesttime.containsKey(p.toLowerCase()))?_remrequesttime.get(p.toLowerCase()):0;
+    }
 }

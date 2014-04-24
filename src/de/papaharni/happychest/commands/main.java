@@ -48,11 +48,22 @@ public class main implements CommandExecutor {
                         p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch create (ArenaName)");
                         return true;
                     }
-                    
-                    
                     //Erstelle eine Arena
+                    Create.create(args[1], p);
                     break;
                 case "delete":
+                    if(args.length < 2) {
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch delete (ArenaName)");
+                        return true;
+                    }
+                    
+                    if(!HappyChest.getInstance().isRemRequest(p.getName())) {
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen mit der erneuten Eingabe des Befehls.");
+                        HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
+                        return true;
+                    }
+                    
+                    if(!HappyChest.getInstance().isRemRequest(label))
                     //Lösche Arena
                     break;
                 case "start":
