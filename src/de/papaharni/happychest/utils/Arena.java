@@ -106,11 +106,29 @@ public class Arena {
     public void reloadChests(Player p) {
         List<Location> chest = Blocks.getChestsListU(_pos1, _pos2);
         if(chest.size() < 2) {
-            p.sendMessage("$f[$2HappyChest$f]$c Konnte keine Truhen mehr finden.");
+            if(p != null)
+                p.sendMessage("$f[$2HappyChest$f]$c Konnte keine Truhen mehr finden.");
             _chests = chest;
             return;
         }
         _chests = chest;
-        p.sendMessage("$f[$2HappyChest$f]$eEs wurden " + chest.size() + " Truhen in dieser Arena gefunden.");
+        if(p != null)
+            p.sendMessage("$f[$2HappyChest$f]$eEs wurden " + chest.size() + " Truhen in dieser Arena gefunden.");
+    }
+    
+    public boolean isInside(Location loc) {
+        //Prüfe Welt
+        if(loc.getWorld() != _pos1.getWorld())
+            return false;
+        //Prüfe X
+        if(loc.getBlockX() < _pos1.getBlockX() && loc.getBlockX() < _pos2.getBlockX() && loc.getBlockX() > _pos1.getBlockX() && loc.getBlockX() > _pos2.getBlockX())
+            return false;
+        //Prüfe Y
+        if(loc.getBlockY() < _pos1.getBlockY() && loc.getBlockY() < _pos2.getBlockY() && loc.getBlockY() > _pos1.getBlockY() && loc.getBlockY() > _pos2.getBlockY())
+            return false;
+        //Prüfe Z
+        if(loc.getBlockZ() < _pos1.getBlockZ() && loc.getBlockZ() < _pos2.getBlockZ() && loc.getBlockZ() > _pos1.getBlockZ() && loc.getBlockZ() > _pos2.getBlockZ())
+            return false;
+        return true;
     }
 }

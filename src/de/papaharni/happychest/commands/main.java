@@ -9,6 +9,7 @@ package de.papaharni.happychest.commands;
 import de.papaharni.happychest.HappyChest;
 import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.ArenaWorks;
+import de.papaharni.happychest.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,15 +62,15 @@ public class main implements CommandExecutor {
                     
                     //Wurde noch kein Remove beauftragt?
                     if(!HappyChest.getInstance().isRemRequest(p.getName())) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[0] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
                         HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
                         return true;
                     }
                     
                     //Ist die alte Arena die gleiche wie jetzt? 
                     if(!HappyChest.getInstance().getRemRequest(p.getName()).equalsIgnoreCase(args[0])) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast einen neuen Löschantrag für die Arena " + args[0] + " gestellt.");
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[0] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
+                        p.sendMessage("$f[$2HappyChest$f]$cDu hast einen neuen Löschantrag für die Arena " + args[1] + " gestellt.");
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
                         HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
                         return true;
                     }
@@ -86,12 +87,20 @@ public class main implements CommandExecutor {
                     HappyChest.getInstance().delRemRequest(p.getName());
                     break;
                 case "start":
+                    if(args.length < 3) {
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch start (ArenaName) (Interval in Minuten)");
+                        return true;
+                    }
                     //Starte eine Runde in Arena
                     break;
                 case "end":
                     //Beende Arena
                     break;
-                case "add":
+                case "additem":
+                    if(args.length < 2) {
+                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch reloadchest (ArenaName)");
+                        return true;
+                    }
                     //Füge Random Item hinzu
                     break;
                 case "reloadchest":
@@ -123,7 +132,16 @@ public class main implements CommandExecutor {
                         return true;
                     }
                     
-                    
+                    if(args.length < 3) {
+                        ArenaWorks.listArenaItems(p, args[1]);
+                        return true;
+                    } else {
+                        if(!Utils.isNumeric(args[2])) {
+                            p.sendMessage("$f[$2HappyChest$f]$cAn Stelle 3 muss eine Zahl stehen.");
+                            return true;
+                        }
+                        ArenaWorks.removeArenaItem(p, args[1], Integer.parseInt(args[2]));
+                    }
                     break;
                 default:
                     //Unbekannter Begriff an stelle 1

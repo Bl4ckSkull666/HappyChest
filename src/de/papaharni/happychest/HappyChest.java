@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +30,15 @@ public class HappyChest extends JavaPlugin {
     
     //Arena Tasks / Arena Name = Task
     private final HashMap<String, BukkitTask> _games = new HashMap<>();
+    //Arena / Aktuelle suchende Truhe
+    private final HashMap<String, Location> _curchests = new HashMap<>();
+    //Arena / Liste der bereits gefundenen Spielernamen
+    private final HashMap<String, List<String>> _usedPlayers = new HashMap<>();
+    //Arena / Liste der zu erhaltenden Items
+    private final HashMap<String, List<String>> _roundRewards = new HashMap<>();
+    //
+    private final List<String> _eventChest = new ArrayList<>();
+    private final HashMap<String, HashMap<String, ItemStack[]>> _reste = new HashMap<>();
     
     //Zur Markierung falls kein WE vorhanden ist.
     private final List<String> _allowMark = new ArrayList<>();
@@ -37,8 +47,11 @@ public class HappyChest extends JavaPlugin {
     
     //Arena Saver
     private final HashMap<String, Arena> _areas = new HashMap<>();
+    
+    //Löschungs Maps - Spielername / Arena - Spielername / Zeit
     private final HashMap<String, String> _remrequest = new HashMap<>();
     private final HashMap<String, Long> _remrequesttime = new HashMap<>();
+
     //Sonstiges - Externe Plugins
     private WorldGuardPlugin _wg;
     private static Economy economy = null;
@@ -179,5 +192,67 @@ public class HappyChest extends JavaPlugin {
     
     public Long getRemRequestTime(String p) {
         return (_remrequesttime.containsKey(p.toLowerCase()))?_remrequesttime.get(p.toLowerCase()):0;
+    }
+    
+    public HashMap<String, Location> getCurChests() {
+        return _curchests;
+    }
+    
+    public List<String> getUsedPlayersList(String a) {
+        if(!_usedPlayers.containsKey(a.toLowerCase()))
+            addUsedPlayersList(a.toLowerCase());
+        return _usedPlayers.get(a.toLowerCase());
+    }
+    
+    public void addUsedPlayersList(String a) {
+        List<String> list = new ArrayList<>();
+        _usedPlayers.put(a.toLowerCase(), list);
+    }
+    
+    public void delUsedPlayersList(String a) {
+        _usedPlayers.remove(a.toLowerCase());
+    }
+    
+    public List<String> getRoundRewards(String a) {
+        if(!_usedPlayers.containsKey(a.toLowerCase())) {
+            List<String> list = new ArrayList<>();
+            addRoundRewards(a.toLowerCase(), list);
+        }
+        return _usedPlayers.get(a.toLowerCase());
+    }
+    
+    public void addRoundRewards(String a, List<String> list) {
+        _usedPlayers.put(a.toLowerCase(), list);
+    }
+    
+    public void delRoundRewards(String a) {
+        _usedPlayers.remove(a.toLowerCase());
+    }
+    
+    public boolean hasReste(String a, String p) {
+        if(!_reste.containsKey(a))
+            return false;
+        if(!_reste.get(a).containsKey(p))
+            return false;
+        return true;
+    }
+    
+    public ItemStack[] getReste(String a, String p) {
+        ItemStack[] item = new ItemStack[1];
+        if(!hasReste(a, p))
+            return item;
+        return _reste.get(a).get(p);
+    }
+    
+    public void setReste(String a, String p, ItemStack[] items) {
+        if(!_reste.containsKey(a)) {
+            HashMap<String, ItemStack[]> rest = new HashMap<>();
+            _reste.put(a, rest);
+        }
+        _reste.get(a).put(p, items);
+    }
+    
+    public void cancelArenaTask(String a) {
+        
     }
 }
