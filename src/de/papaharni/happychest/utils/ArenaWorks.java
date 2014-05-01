@@ -7,8 +7,15 @@
 package de.papaharni.happychest.utils;
 
 import de.papaharni.happychest.HappyChest;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 /**
@@ -141,5 +148,57 @@ public final class ArenaWorks {
         }
         
         HappyChest.getInstance().getArena(a).getItemList().remove((iid-1));
+    }
+    
+    public static void endArena(String a, Player p) {
+        if(!HappyChest.getInstance().isArena(a)) {
+            p.sendMessage("$f[$2HappyChest$f]$cDie angegebene Arena wurde nicht gefunden.");
+            return;
+        }
+        
+        HappyChest.getInstance().cancelArenaTask(a);
+    }
+    
+    public static void loadAreas() {
+        File files = new File(HappyChest.getInstance().getDataFolder().getPath());
+        for(File f: files.listFiles()) {
+            if(f.getName().startsWith("arena_") && f.getName().endsWith(".yml") && !f.isDirectory()) {
+                Configuration conf = YamlConfiguration.loadConfiguration(f);
+                if(conf.isString("name") && Utils.getLFST(conf.getString("pos1")) != null && Utils.getLFST(conf.getString("pos2")) != null && conf.isList("chests")) {
+                    List<Location> chloc = new ArrayList<>();
+                    for(String l: conf.getStringList("chests")) {
+                        Location loc = Utils.getLFST(l);
+                        if(loc != null)
+                            chloc.add(loc);
+                    }
+                    Arena a = new Arena(conf.getString("name"),Utils.getLFST(conf.getString("pos1")), Utils.getLFST(conf.getString("pos2")), chloc);
+                    if(conf.isList("items"))
+                        a.setItemList(conf.getStringList("items"));
+                    if(conf.isBoolean("4one"))
+                        a.setOneForAll(conf.getBoolean("4one"));
+                    
+                    HappyChest.getInstance().addArena(a);
+                }
+            }
+        }
+    }
+    
+    public static void saveAreas() {
+        for(Map.Entry<String, Arena> e: HappyChest.getInstance().getArenas().entrySet()) {
+            File file = new File(HappyChest.getInstance().getDataFolder(), "arena_" + e.getKey() + ".yml");
+            Configuration conf = YamlConfiguration.loadConfiguration(file);
+            conf.set("name", e.getValue().getName());
+            Location loc1 = e.getValue().getPos1();
+            Location loc2 = e.getValue().getPos2();
+            conf.set("pos1", loc1.getWorld().getName() + ":" + loc1.getBlockX() + ":" + loc1.getBlockY() + ":" + loc1.getBlockZ());
+            conf.set("pos2", loc2.getWorld().getName() + ":" + loc2.getBlockX() + ":" + loc2.getBlockY() + ":" + loc2.getBlockZ());
+            List<String> chest = new ArrayList<>();
+            for(Location loc: e.getValue().getChests()) {
+                chest.add(loc.getWorld().getName() + ":" + loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ());
+            }
+            conf.set("chests", chest);
+            conf.set("items", e.getValue().getItemList());
+            conf.set("4one", e.getValue().getOneForAll());
+        }
     }
 }

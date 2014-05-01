@@ -6,6 +6,10 @@
 
 package de.papaharni.happychest.utils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author Pappi
@@ -33,5 +37,32 @@ public final class Utils {
         } catch(NumberFormatException e) {
             return false;
         }
+    }
+        
+    public static boolean isDouble(String str) {
+        try {
+            double i = Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }   
+    
+    public static void worldBroadcast(String msg, String w) {
+        for(Player p: Bukkit.getOnlinePlayers()) {
+            if(!p.getLocation().getWorld().getName().equalsIgnoreCase(w))
+                continue;
+            p.sendMessage("$f[$2HappyChest$f]$e" + msg);
+        }
+    }
+    
+    public static Location getLFST(String str) {
+        String[] l = str.split(":");
+        if(l.length == 4) {
+            if(Bukkit.getWorld(l[0]) != null && isDouble(l[1]) && isDouble(l[2]) && isDouble(l[3])) {
+                return new Location(Bukkit.getWorld(l[0]), Double.parseDouble(l[1]), Double.parseDouble(l[2]), Double.parseDouble(l[3]));
+            }
+        }
+        return null;
     }
 }

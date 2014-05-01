@@ -23,12 +23,21 @@ public class Arena {
     
     List<Location> _chests = new ArrayList<>();
     List<String> _items = new ArrayList<>();
+    boolean _oneForAll = false;
     
     public Arena(String name, Location loc1, Location loc2, List<Location> chest) {
         _name = name;
         _pos1 = loc1;
         _pos2 = loc2;
         _chests = chest;
+    }
+    
+    public void setOneForAll(boolean bl) {
+        _oneForAll = bl;
+    }
+    
+    public boolean getOneForAll() {
+        return _oneForAll;
     }
     
     public void addChest(Location loc) {
@@ -46,6 +55,10 @@ public class Arena {
     public void addItem(String str) {
         if(Items.isItem(str))
             _items.add(str);
+    }
+    
+    public void setItemList(List<String> str) {
+        _items = str;
     }
     
     public int getItemCount() {

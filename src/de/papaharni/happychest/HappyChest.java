@@ -8,9 +8,11 @@ package de.papaharni.happychest;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.papaharni.happychest.utils.Arena;
+import de.papaharni.happychest.utils.ArenaWorks;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -29,28 +31,31 @@ public class HappyChest extends JavaPlugin {
     private static boolean _debugMode;
     
     //Arena Tasks / Arena Name = Task
-    private final HashMap<String, BukkitTask> _games = new HashMap<>();
+    private final Map<String, BukkitTask> _games = new HashMap<>();
     //Arena / Aktuelle suchende Truhe
-    private final HashMap<String, Location> _curchests = new HashMap<>();
+    private final Map<String, Location> _curchests = new HashMap<>();
     //Arena / Liste der bereits gefundenen Spielernamen
-    private final HashMap<String, List<String>> _usedPlayers = new HashMap<>();
+    private final Map<String, List<String>> _usedPlayers = new HashMap<>();
     //Arena / Liste der zu erhaltenden Items
-    private final HashMap<String, List<String>> _roundRewards = new HashMap<>();
+    private final Map<String, List<String>> _roundRewards = new HashMap<>();
     //
     private final List<String> _eventChest = new ArrayList<>();
-    private final HashMap<String, HashMap<String, ItemStack[]>> _reste = new HashMap<>();
+    private final Map<String, HashMap<String, ItemStack[]>> _reste = new HashMap<>();
+    
+    //Runden Tasks Speicherung
+    private final Map<String, BukkitTask> _areaTask = new HashMap<>();
     
     //Zur Markierung falls kein WE vorhanden ist.
     private final List<String> _allowMark = new ArrayList<>();
-    private final HashMap<String, Location> _playerMarksLeft = new HashMap<>();
-    private final HashMap<String, Location> _playerMarksRight = new HashMap<>();
+    private final Map<String, Location> _playerMarksLeft = new HashMap<>();
+    private final Map<String, Location> _playerMarksRight = new HashMap<>();
     
     //Arena Saver
-    private final HashMap<String, Arena> _areas = new HashMap<>();
+    private final Map<String, Arena> _areas = new HashMap<>();
     
     //Löschungs Maps - Spielername / Arena - Spielername / Zeit
-    private final HashMap<String, String> _remrequest = new HashMap<>();
-    private final HashMap<String, Long> _remrequesttime = new HashMap<>();
+    private final Map<String, String> _remrequest = new HashMap<>();
+    private final Map<String, Long> _remrequesttime = new HashMap<>();
 
     //Sonstiges - Externe Plugins
     private WorldGuardPlugin _wg;
@@ -59,11 +64,12 @@ public class HappyChest extends JavaPlugin {
     @Override
     public void onEnable() {
         _wg = getWorldGuard();
+        ArenaWorks.loadAreas();
     }
     
     @Override
     public void onDisable() {
-    
+        ArenaWorks.saveAreas();
     }
     
     public static HappyChest getInstance() {
@@ -168,6 +174,10 @@ public class HappyChest extends JavaPlugin {
         return isArena(a)?_areas.get(a.toLowerCase()):null;
     }
     
+    public Map<String, Arena> getArenas() {
+        return _areas;
+    }
+    
     public void delArena(String a) {
         _areas.remove(a.toLowerCase());
     }
@@ -194,7 +204,7 @@ public class HappyChest extends JavaPlugin {
         return (_remrequesttime.containsKey(p.toLowerCase()))?_remrequesttime.get(p.toLowerCase()):0;
     }
     
-    public HashMap<String, Location> getCurChests() {
+    public Map<String, Location> getCurChests() {
         return _curchests;
     }
     
@@ -253,6 +263,16 @@ public class HappyChest extends JavaPlugin {
     }
     
     public void cancelArenaTask(String a) {
-        
+        if(_areaTask.containsKey(a)) {
+            if(_areaTask.get(a) != null) {
+                _areaTask.get(a).cancel();
+            }
+            _areaTask.remove(a);
+        }
+    }
+    
+    public void setArenaTask(String a, BukkitTask t) {
+        cancelArenaTask(a);
+        _areaTask.put(a, t);
     }
 }
