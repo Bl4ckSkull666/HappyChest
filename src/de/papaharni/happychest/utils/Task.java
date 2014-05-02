@@ -7,14 +7,17 @@
 package de.papaharni.happychest.utils;
 
 import de.papaharni.happychest.HappyChest;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -105,13 +108,38 @@ class setNewRound implements Runnable {
             return;
         }
         
-        //Erstelle eine neue Item List
-        List<String> itemList = getRandomItems(a);
-        HappyChest.getInstance().addRoundRewards(_a, itemList);
-        
         //Ermittle neue Chest Location
         Location loc = getRandomLocation(a);
         HappyChest.getInstance().getCurChests().put(_a, loc);
+        
+        //Erstelle eine neue Item List
+        List<String> itemList = getRandomItems(a);
+        
+        if(a.getOneForAll()) {
+            Block b = Bukkit.getWorld(loc.getWorld().getUID()).getBlockAt(loc);
+            if(b != null) {
+                ItemStack[] items = new ItemStack[itemList.size()];
+                if(b instanceof DoubleChest) {
+                    DoubleChest c = (DoubleChest)b;
+                    c.getInventory().setContents(items);
+                } else if(b instanceof Chest) {
+                    Chest c = (Chest)b;
+                    c.getInventory().setContents(items);
+                } else {
+                    if(p != null)
+                        p.sendMessage("$f[$2HappyChest$f]$cEvent muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                    HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                    return;
+                }
+            } else {
+                if(p != null)
+                    p.sendMessage("$f[$2HappyChest$f]$cEvent muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                return;
+            }
+        } else {
+            HappyChest.getInstance().addRoundRewards(_a, itemList);
+        }
         
         Utils.worldBroadcast("$f[$2HappyChest$f]$cEine neue Runde in " + a.getName() + " hat begonnen. Viel Glück beim Truhe suchen.", a.getPos1().getWorld().getName());
         

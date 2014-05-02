@@ -59,6 +59,14 @@ public class InventoryOpen implements Listener {
                 return false;
             }
             
+            if(a.getOneForAll()) {
+                p.sendMessage("$f[$2HappyChest$f]$eGlückwunsch , du hast die richtige Truhe gefunden.");
+                if(c.getInventory().getContents().length < 1) {
+                    p.sendMessage("$f[$2HappyChest$f]$eLeider wurde die Kiste in dieser Runde schon geplündert.");
+                }
+                return true;
+            }
+            
             ItemStack[] items = getItemStack(e.getKey(), p, c.getInventory().getSize());
             c.getInventory().setContents(items);
             p.sendMessage("$f[$2HappyChest$f]$eGlückwunsch , du hast die richtige Truhe gefunden.");

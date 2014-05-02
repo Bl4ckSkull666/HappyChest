@@ -12,6 +12,7 @@ import de.papaharni.happychest.utils.ArenaWorks;
 import de.papaharni.happychest.utils.Task;
 import de.papaharni.happychest.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,10 +22,10 @@ import org.bukkit.entity.Player;
  *
  * @author Pappi
  */
-public class main implements CommandExecutor {
+public class hch implements CommandExecutor {
     private HappyChest _plugin;
     
-    public void main(HappyChest plugin) {
+    public hch(HappyChest plugin) {
         _plugin = plugin;
     }
     
@@ -37,7 +38,7 @@ public class main implements CommandExecutor {
         }
         
         if(!p.hasPermission("happychest.use") && !p.isOp()) {
-            sender.sendMessage("$f[$2HappyChest$f]$cDu hast nicht die erforderlichen Rechte um diesen Befehl zu verwenden.");
+            sendMessage(p, "&f[&2HappyChest&f]&cDu hast nicht die erforderlichen Rechte um diesen Befehl zu verwenden.");
             return true;
         }
         
@@ -46,16 +47,20 @@ public class main implements CommandExecutor {
                 case "mark":
                     //Aktiviere/Deakiviere das Markieren
                     if(_plugin.isAllowMarking(p.getName())) {
-                        p.sendMessage("$f[$2HappyChest$f]$eDas Makieren wurde deaktiviert.");
+                        sendMessage(p, "&f[&2HappyChest&f]&eDas Makieren wurde deaktiviert.");
                         _plugin.denyMarking(p.getName());
                     } else {
-                        p.sendMessage("$f[$2HappyChest$f]$eVerwende ein Gold Schwert zum makieren.");
+                        if(HappyChest.getInstance().getWG() != null) {
+                            sendMessage(p, "&f[&2HappyChest&f]&eVerwende bitte nun WorldEdit zum makieren.");
+                        } else {
+                            sendMessage(p, "&f[&2HappyChest&f]&eVerwende bitte ein Gold Schwert zum makieren.");
+                        }
                         _plugin.allowMarking(p.getName());
                     }
                     break;
                 case "create":
                     if(args.length < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch create (ArenaName)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch create (ArenaName)");
                         return true;
                     }
                     //Erstelle eine Arena
@@ -63,28 +68,28 @@ public class main implements CommandExecutor {
                     break;
                 case "delete":
                     if(args.length < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch delete (ArenaName)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch delete (ArenaName)");
                         return true;
                     }
                     
                     //Wurde noch kein Remove beauftragt?
                     if(!HappyChest.getInstance().isRemRequest(p.getName())) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
                         HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
                         return true;
                     }
                     
                     //Ist die alte Arena die gleiche wie jetzt? 
                     if(!HappyChest.getInstance().getRemRequest(p.getName()).equalsIgnoreCase(args[0])) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast einen neuen Löschantrag für die Arena " + args[1] + " gestellt.");
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast einen neuen Löschantrag für die Arena " + args[1] + " gestellt.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
                         HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
                         return true;
                     }
                     
                     //Ist die Zeit noch nciht abgelaufen?
                     if(HappyChest.getInstance().getRemRequestTime(p.getName()) < (System.currentTimeMillis()-3000)) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast zu lange für deine Löschbestätigung gebraucht.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast zu lange für deine Löschbestätigung gebraucht.");
                         HappyChest.getInstance().addRemRequest(p.getName(), args[1]);
                         return true;
                     }
@@ -95,19 +100,19 @@ public class main implements CommandExecutor {
                     break;
                 case "start":
                     if(args.length < 3) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwende /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwende /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
                         return true;
                     }
                     
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        p.sendMessage("$f[$2HappyChest$f]$cArena Name konnte nicht gefunden werden.");
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cArena Name konnte nicht gefunden werden.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
                         return true;
                     }
                     
                     if(!Utils.isNumeric(args[2])) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDer Interval muss eine Nummer sein.");
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDer Interval muss eine Nummer sein.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
                         return true;
                     }
                     
@@ -116,18 +121,18 @@ public class main implements CommandExecutor {
                         if(Utils.isNumeric(args[3])) {
                             rounds = Integer.parseInt(args[3]);
                             if(rounds < 1) {
-                                p.sendMessage("$f[$2HappyChest$f]$cDie Runden Anzahl muss eine Zahl sein.");
-                                p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
+                                sendMessage(p, "&f[&2HappyChest&f]&cDie Runden Anzahl muss eine Zahl sein.");
+                                sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
                                 return true;
                             }
                         }
                     }
                     //Arena , interval ( Abstand ), Starter Name , 0 (Aktuelle Runde , Rundenanzahl )
                     Task.startRound(args[1], Integer.parseInt(args[2]), p.getName(), 0, rounds);
-                    p.sendMessage("$f[$2HappyChest$f]$eDie Erste Runde geht in 2 Minuten los.");
+                    sendMessage(p, "&f[&2HappyChest&f]&eDie Erste Runde geht in 2 Minuten los.");
                     for(Player pl: Bukkit.getOnlinePlayers()) {
                         if(pl != p) {
-                            pl.sendMessage("$f[$2HappyChest$f]$eIn 2 Minuten startet in Arena " + args[1] + " eine Schatzjagt.");
+                            pl.sendMessage("&f[&2HappyChest&f]&eIn 2 Minuten startet in Arena " + args[1] + " eine Schatzjagt.");
                         }
                     }
                     //Starte eine Runde in Arena
@@ -137,27 +142,27 @@ public class main implements CommandExecutor {
                     break;
                 case "additem":
                     if(args.length < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch reloadchest (ArenaName)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch reloadchest (ArenaName)");
                         return true;
                     }
                     //Füge Random Item hinzu
                     break;
                 case "reloadchest":
                     if(args.length < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch reloadchest (ArenaName)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch reloadchest (ArenaName)");
                         return true;
                     }
                     
                     //Prüfe ob Arena vorhanden ist
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDie gewünschte Arena existiert nicht.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDie gewünschte Arena existiert nicht.");
                         return true;
                     }
                     
                     //Hole Arena und prüfe ist nicht null
                     Arena a = HappyChest.getInstance().getArena(args[1]);
                     if(a == null) {
-                        p.sendMessage("$f[$2HappyChest$f]$cKonnte die Arena nicht finden.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cKonnte die Arena nicht finden.");
                         return true;
                     }
                     
@@ -166,12 +171,12 @@ public class main implements CommandExecutor {
                     break;
                 case "removeitem":
                     if(!p.hasPermission("happychest.load") && !p.hasPermission("happychest.*") && !p.isOp()) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast keine Rechte um die Areas neuzuladen.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
                         return true;
                     }
                     //Lösche Item aus der Random Liste
                     if(args.length < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch removeitem (ArenaName) (Optional Item-Nr.)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch removeitem (ArenaName) (Optional Item-Nr.)");
                         return true;
                     }
                     
@@ -180,7 +185,7 @@ public class main implements CommandExecutor {
                         return true;
                     } else {
                         if(!Utils.isNumeric(args[2])) {
-                            p.sendMessage("$f[$2HappyChest$f]$cAn Stelle 3 muss eine Zahl stehen.");
+                            sendMessage(p, "&f[&2HappyChest&f]&cAn Stelle 3 muss eine Zahl stehen.");
                             return true;
                         }
                         ArenaWorks.removeArenaItem(p, args[1], Integer.parseInt(args[2]));
@@ -188,28 +193,28 @@ public class main implements CommandExecutor {
                     break;
                 case "load":
                     if(!p.hasPermission("happychest.load") && !p.hasPermission("happychest.*") && !p.isOp()) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast keine Rechte um die Areas neuzuladen.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
                         return true;
                     }
-                    ArenaWorks.loadAreas();
-                    p.sendMessage("$f[$2HappyChest$f]$eAlle HappyChest Areas wurden neugeladen.");
+                    ArenaWorks.loadAreas(_plugin);
+                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden neugeladen.");
                     break;
                 case "save":
                     if(!p.hasPermission("happychest.save") && !p.hasPermission("happychest.save") && !p.isOp()) {
-                        p.sendMessage("$f[$2HappyChest$f]$cDu hast keine Rechte um die Areas zu speichern.");
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas zu speichern.");
                         return true;
                     }
-                    ArenaWorks.saveAreas();
-                    p.sendMessage("$f[$2HappyChest$f]$eAlle HappyChest Areas wurden neugeladen.");
+                    ArenaWorks.saveAreas(_plugin);
+                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden neugeladen.");
                 default:
                     //Unbekannter Begriff an stelle 1
-                    p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove/load/save)");
+                    sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove/load/save)");
                     break;
             }
             return true;
         }
         //Argument(e) vergessen
-        p.sendMessage("$f[$2HappyChest$f]$cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove)");
+        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove)");
         return true;
     }
     
@@ -217,6 +222,10 @@ public class main implements CommandExecutor {
         if(!p.hasPermission("happychest." + perm) || !p.hasPermission("happychest.*") || !p.isOp())
             return false;
         return true;
+    }
+    
+    private void sendMessage(Player p, String msg) {
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
     
 }

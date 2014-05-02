@@ -7,6 +7,7 @@
 package de.papaharni.happychest;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.papaharni.happychest.commands.hch;
 import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.ArenaWorks;
 import java.util.ArrayList;
@@ -64,12 +65,14 @@ public class HappyChest extends JavaPlugin {
     @Override
     public void onEnable() {
         _wg = getWorldGuard();
-        ArenaWorks.loadAreas();
+        ArenaWorks.loadAreas(this);
+        this.getCommand("hch").setExecutor(new hch(this));
+        _instance = this;
     }
     
     @Override
     public void onDisable() {
-        ArenaWorks.saveAreas();
+        ArenaWorks.saveAreas(this);
     }
     
     public static HappyChest getInstance() {

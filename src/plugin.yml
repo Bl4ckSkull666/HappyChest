@@ -1,0 +1,11 @@
+name: HappyChest
+version: 0.1
+author: PapaHarni
+main: de.papaharni.happychest.HappyChest
+softdepend: [WorldEdit]
+prefix: HappyChest
+database: false
+commands:
+  hch:
+    description: Befehl um HappyChest zu starten und mehr.
+    usage: /<command>

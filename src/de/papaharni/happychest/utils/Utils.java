@@ -7,6 +7,7 @@
 package de.papaharni.happychest.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -52,7 +53,7 @@ public final class Utils {
         for(Player p: Bukkit.getOnlinePlayers()) {
             if(!p.getLocation().getWorld().getName().equalsIgnoreCase(w))
                 continue;
-            p.sendMessage("$f[$2HappyChest$f]$e" + msg);
+            sendMessage(p, "$f[$2HappyChest$f]$e" + msg);
         }
     }
     
@@ -64,5 +65,9 @@ public final class Utils {
             }
         }
         return null;
+    }
+    
+    public static void sendMessage(Player p, String msg) {
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
 }
