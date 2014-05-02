@@ -31,7 +31,6 @@ public final class Blocks {
     }
     
     public static List<Location> getChestsListU(Location loc1, Location loc2) {
-        List<Location> chests = new ArrayList<>();
         int minx = Math.max(loc1.getBlockX(), loc2.getBlockX());
         int miny = Math.max(loc1.getBlockY(), loc2.getBlockY());
         int minz = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
