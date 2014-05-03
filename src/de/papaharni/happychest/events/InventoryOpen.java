@@ -9,6 +9,7 @@ package de.papaharni.happychest.events;
 import de.papaharni.happychest.HappyChest;
 import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.Items;
+import de.papaharni.happychest.utils.Utils;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Location;
@@ -35,68 +36,45 @@ public class InventoryOpen implements Listener {
             return;
         }
         
-        if(e.getInventory().getHolder() instanceof DoubleChest) {
-            DoubleChest c = (DoubleChest)e.getInventory().getHolder();
-            checkDoubleChest(p, c.getLocation(), c);
-            return;
-        }
-        if(e.getInventory().getHolder() instanceof Chest) {
-            Chest c = (Chest)e.getInventory().getHolder();
-            checkChest(p, c.getLocation(), c);
-            return;
-        }
+        Location loc = null;
+        if(e.getInventory().getHolder() instanceof Chest)
+            loc = ((Chest)e.getInventory().getHolder()).getLocation();
+        else if(e.getInventory().getHolder() instanceof DoubleChest)
+            loc = ((Chest)e.getInventory().getHolder()).getLocation();
         
-    }
-    
-    public boolean checkChest(Player p, Location loc, Chest c) {
-        for(Map.Entry<String, Location> e: HappyChest.getInstance().getCurChests().entrySet()) {
-            Arena a = HappyChest.getInstance().getArena(e.getKey());
-            if(!a.isInside(loc))
-                continue;
-            
-            if(e.getValue().distance(loc) > 1.0) {
-                p.sendMessage("$f[$2HappyChest$f]$eSchade , das ist leider nicht die Schatztruhe.");
-                return false;
-            }
-            
-            if(a.getOneForAll()) {
-                p.sendMessage("$f[$2HappyChest$f]$eGlückwunsch , du hast die richtige Truhe gefunden.");
-                if(c.getInventory().getContents().length < 1) {
-                    p.sendMessage("$f[$2HappyChest$f]$eLeider wurde die Kiste in dieser Runde schon geplündert.");
+        if(loc != null) {
+            for(Map.Entry<String, Location> en: HappyChest.getInstance().getCurChests().entrySet()) {
+                Arena a = HappyChest.getInstance().getArena(en.getKey());
+                if(!a.isInside(loc))
+                    continue;
+
+                if(en.getValue().distance(loc) > 1.0) {
+                    Utils.sendMessage(p, "&eSchade , das ist leider nicht die Schatztruhe.");
+                    return;
                 }
-                return true;
+                
+                if(a.getOneForAll()) {
+                    Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
+                    if(e.getInventory().getContents().length < 1) {
+                        Utils.sendMessage(p, "&eLeider wurde die Kiste in dieser Runde schon geplündert.");
+                    }
+                    return;
+                }
+
+                ItemStack[] items = getItemStack(en.getKey(), p, e.getInventory().getSize());
+                if(items.length > 0) {
+                    e.getInventory().setContents(items);
+                    Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
+                }
+                return;
             }
-            
-            ItemStack[] items = getItemStack(e.getKey(), p, c.getInventory().getSize());
-            c.getInventory().setContents(items);
-            p.sendMessage("$f[$2HappyChest$f]$eGlückwunsch , du hast die richtige Truhe gefunden.");
-            return true;
-        } 
-        return false;
-    }
-    
-    public boolean checkDoubleChest(Player p, Location loc, DoubleChest c) {
-        for(Map.Entry<String, Location> e: HappyChest.getInstance().getCurChests().entrySet()) {
-            Arena a = HappyChest.getInstance().getArena(e.getKey());
-            if(!a.isInside(loc))
-                continue;
-            
-            if(e.getValue().distance(loc) > 1.0) {
-                p.sendMessage("$f[$2HappyChest$f]$eSchade , das ist leider nicht die Schatztruhe.");
-                return false;
-            }
-            
-            ItemStack[] items = getItemStack(e.getKey(), p, c.getInventory().getSize());
-            c.getInventory().setContents(items);
-            return true;
         }
-        return false;
     }
     
     public ItemStack[] getItemStack(String a, Player p, int csize) {
         if(!HappyChest.getInstance().getUsedPlayersList(a).equals(p.getName())) {
             if(HappyChest.getInstance().hasReste(a, p.getName())) {
-                p.sendMessage("$f[$2HappyChest$f]$eHier ist das was du noch in der Truhe vergessen hast. Bitte nimm es raus bevor es weg ist.");
+                Utils.sendMessage(p, "&eHier ist das was du noch in der Truhe vergessen hast. Bitte nimm es raus bevor es weg ist.");
                 return HappyChest.getInstance().getReste(a, p.getName());
             }
             List<String> list = HappyChest.getInstance().getRoundRewards(a);
@@ -109,10 +87,9 @@ public class InventoryOpen implements Listener {
                 items[i] = item;
             }
             HappyChest.getInstance().getUsedPlayersList(a).add(p.getName());
-            p.sendMessage("$f[$2HappyChest$f]$eGlückwunsch , du hast die richtige Truhe gefunden.");
             return items;
         }
-        p.sendMessage("$f[$2HappyChest$f]$eOh du hast die Truhe bereits geplündert. Versuchs in der nächste Runde noch einmal.");
+        Utils.sendMessage(p, "&eOh du hast die Truhe bereits geplündert. Versuchs in der nächste Runde noch einmal.");
         ItemStack[] items = new ItemStack[csize];
         return items;
     }

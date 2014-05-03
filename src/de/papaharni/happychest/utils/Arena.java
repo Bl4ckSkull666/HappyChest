@@ -120,13 +120,13 @@ public class Arena {
         List<Location> chest = Blocks.getChestsListU(_pos1, _pos2);
         if(chest.size() < 2) {
             if(p != null)
-                p.sendMessage("$f[$2HappyChest$f]$c Konnte keine Truhen mehr finden.");
+                Utils.sendMessage(p, "&c Konnte keine Truhen mehr finden.");
             _chests = chest;
             return;
         }
         _chests = chest;
         if(p != null)
-            p.sendMessage("$f[$2HappyChest$f]$eEs wurden " + chest.size() + " Truhen in dieser Arena gefunden.");
+            Utils.sendMessage(p, "&eEs wurden " + chest.size() + " Truhen in dieser Arena gefunden.");
     }
     
     public boolean isInside(Location loc) {

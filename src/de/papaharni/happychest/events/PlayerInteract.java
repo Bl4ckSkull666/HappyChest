@@ -8,6 +8,7 @@ package de.papaharni.happychest.events;
 
 import de.papaharni.happychest.HappyChest;
 import de.papaharni.happychest.utils.Blocks;
+import de.papaharni.happychest.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,7 +35,7 @@ public class PlayerInteract implements Listener {
         Player p = event.getPlayer();
         Block b = event.getClickedBlock();
         
-        if(b == null || p == null || !_plugin.isAllowMarking(p.getName()) && HappyChest.getInstance().getWG() == null || !event.hasItem())
+        if(b == null || p == null || !_plugin.isAllowMarking(p.getName()) || !event.hasItem())
             return;
         
         if(!event.getItem().getType().equals(Material.GOLD_SWORD) && HappyChest.getInstance().getWG() == null)
@@ -50,21 +51,21 @@ public class PlayerInteract implements Listener {
                     int total = HappyChest.getInstance().getWG().getWorldEdit().getSelection(p).getArea();
 
                     if(chests < 2) {
-                        p.sendMessage("$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich.");
+                        Utils.sendMessage(p, "$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich.");
                         return;
                     }
-                    p.sendMessage("$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert mit insgesamt " + String.valueOf(chests) + " Truhen.");
+                    Utils.sendMessage(p, "$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert mit insgesamt " + String.valueOf(chests) + " Truhen.");
                 }
             } catch (Exception ex) {
-                p.sendMessage("Kann es sein das du keine Region selected hast?");
+                Utils.sendMessage(p, "Kann es sein das du keine Region selected hast?");
             }
         } else {
             if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                p.sendMessage("$f[$2HappyChest$f]$eLinke makierung gesetzt.");
+                Utils.sendMessage(p, "$f[$2HappyChest$f]$eLinke makierung gesetzt.");
                 _plugin.setMarking(p.getName(), "left", b.getLocation());
             }
             if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                p.sendMessage("$f[$2HappyChest$f]$eRechte makierung gesetzt.");
+                Utils.sendMessage(p, "$f[$2HappyChest$f]$eRechte makierung gesetzt.");
                 _plugin.setMarking(p.getName(), "right", b.getLocation());
             }
 
@@ -78,10 +79,10 @@ public class PlayerInteract implements Listener {
                 int chests = Blocks.getChestsCountU(loc1, loc2);
 
                 if(chests < 2) {
-                    p.sendMessage("$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich.");
+                    Utils.sendMessage(p, "$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich.");
                     return;
                 }
-                p.sendMessage("$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert mit insgesamt " + String.valueOf(chests) + " Truhen.");
+                Utils.sendMessage(p, "$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert mit insgesamt " + String.valueOf(chests) + " Truhen.");
             }
         }
     }

@@ -6,15 +6,14 @@
 
 package de.papaharni.happychest.utils;
 
+import de.papaharni.happychest.HappyChest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
-import org.bukkit.inventory.DoubleChestInventory;
 
 /**
  *
@@ -43,21 +42,21 @@ public final class Blocks {
     
     public static List<Location> getChestsListS(Location loc1, Location loc2) {
         List<Location> chests = new ArrayList<>();
-        
+        List<Location> doublechests = new ArrayList<>();
         for(int x = loc1.getBlockX(); x <= loc2.getBlockX(); x++) {
-            for(int z = loc1.getBlockZ(); z <= loc2.getBlockY(); z++) {
-                for(int y = loc1.getBlockY(); y <= loc2.getBlockZ(); y++) {
+            for(int z = loc1.getBlockZ(); z <= loc2.getBlockZ(); z++) {
+                for(int y = loc1.getBlockY(); y <= loc2.getBlockY(); y++) {
                     Block b = Bukkit.getWorld(loc1.getWorld().getUID()).getBlockAt(x, y, z);
-                    if(b.getState().getType() == Material.CHEST || b.getState().getType() == Material.ENDER_CHEST || b.getState().getType() == Material.TRAPPED_CHEST) {
-                        if(b.getState() instanceof DoubleChest) {
-                            DoubleChest chest = (DoubleChest)b.getState();
-                            if(chest.getLeftSide() instanceof DoubleChestInventory) {
-                                DoubleChestInventory dci = (DoubleChestInventory)chest.getLeftSide();
-                                chests.add(dci.getHolder().getLocation());
-                            }
-                        } else if(b.getState() instanceof Chest) {
-                            chests.add(b.getLocation());
+                    if(b.getState().getType() == Material.CHEST || b.getState().getType() == Material.TRAPPED_CHEST) {
+                        boolean isCounted = false;
+                        for(Location l: doublechests) {
+                            if(b.getLocation().distance(l) < 1.1)
+                                isCounted = true;
                         }
+                        if(isCounted)
+                            continue;
+                        chests.add(b.getLocation());
+                        doublechests.add(b.getLocation());
                     }
                 }
             }

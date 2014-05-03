@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.papaharni.happychest;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.papaharni.happychest.commands.hch;
+import de.papaharni.happychest.events.InventoryOpen;
+import de.papaharni.happychest.events.PlayerInteract;
 import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.ArenaWorks;
 import java.util.ArrayList;
@@ -66,6 +62,8 @@ public class HappyChest extends JavaPlugin {
     public void onEnable() {
         _wg = getWorldGuard();
         this.getCommand("hch").setExecutor(new hch(this));
+        getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
         _instance = this;
         ArenaWorks.loadAreas();
     }
