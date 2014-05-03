@@ -6,16 +6,15 @@
 
 package de.papaharni.happychest.utils;
 
-import de.papaharni.happychest.HappyChest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.inventory.DoubleChestInventory;
 
 /**
  *
@@ -31,41 +30,38 @@ public final class Blocks {
     }
     
     public static List<Location> getChestsListU(Location loc1, Location loc2) {
-        int minx = Math.max(loc1.getBlockX(), loc2.getBlockX());
-        int miny = Math.max(loc1.getBlockY(), loc2.getBlockY());
-        int minz = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
-        int maxx = Math.max(loc1.getBlockX(), loc2.getBlockX());
-        int maxy = Math.max(loc1.getBlockY(), loc2.getBlockY());
-        int maxz = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
-        
-        return getChestsListS(new Location(loc1.getWorld(), minx, miny, minz), new Location(loc2.getWorld(), maxx, maxy, maxz));
+        int minX = Math.min(loc1.getBlockX(), loc2.getBlockX());
+        int minY = Math.min(loc1.getBlockY(), loc2.getBlockY());
+        int minZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+        int maxX = Math.max(loc1.getBlockX(), loc2.getBlockX());
+        int maxY = Math.max(loc1.getBlockY(), loc2.getBlockY());
+        int maxZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
+        Location min = new Location(loc1.getWorld(), minX, minY, minZ);
+        Location max = new Location(loc2.getWorld(), maxX, maxY, maxZ);
+        return getChestsListS(min, max);
     }
     
     public static List<Location> getChestsListS(Location loc1, Location loc2) {
         List<Location> chests = new ArrayList<>();
-        int i = 1;
+        
         for(int x = loc1.getBlockX(); x <= loc2.getBlockX(); x++) {
             for(int z = loc1.getBlockZ(); z <= loc2.getBlockY(); z++) {
                 for(int y = loc1.getBlockY(); y <= loc2.getBlockZ(); y++) {
                     Block b = Bukkit.getWorld(loc1.getWorld().getUID()).getBlockAt(x, y, z);
-                    if(b.getType() == Material.CHEST || b.getType() == Material.ENDER_CHEST || b.getType() == Material.TRAPPED_CHEST) {
-                        HappyChest.getInstance().getLogger().log(Level.INFO, "Block " + i + " ist eine Chest.");
-                        if(b instanceof DoubleChest) {
-                            DoubleChest chest = (DoubleChest)b;
-                            chests.add(chest.getLocation());
-                            continue;
-                        }
-                        if(b instanceof Chest) {
+                    if(b.getState().getType() == Material.CHEST || b.getState().getType() == Material.ENDER_CHEST || b.getState().getType() == Material.TRAPPED_CHEST) {
+                        if(b.getState() instanceof DoubleChest) {
+                            DoubleChest chest = (DoubleChest)b.getState();
+                            if(chest.getLeftSide() instanceof DoubleChestInventory) {
+                                DoubleChestInventory dci = (DoubleChestInventory)chest.getLeftSide();
+                                chests.add(dci.getHolder().getLocation());
+                            }
+                        } else if(b.getState() instanceof Chest) {
                             chests.add(b.getLocation());
                         }
                     }
-                    i++;
                 }
-                i++;
             }
-            i++;
         }
-        HappyChest.getInstance().getLogger().log(Level.INFO, "Es wurden " + i + " Blöcke durchsucht.");
         return chests;
     }
 }

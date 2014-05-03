@@ -44,7 +44,7 @@ public class hch implements CommandExecutor {
         
         if(args.length >= 1) {
             switch(args[0].toLowerCase()) {
-                case "mark":
+                case "mark": //FERTIG
                     //Aktiviere/Deakiviere das Markieren
                     if(_plugin.isAllowMarking(p.getName())) {
                         sendMessage(p, "&f[&2HappyChest&f]&eDas Makieren wurde deaktiviert.");
@@ -58,7 +58,7 @@ public class hch implements CommandExecutor {
                         _plugin.allowMarking(p.getName());
                     }
                     break;
-                case "create":
+                case "create": //FERTIG
                     if(args.length < 2) {
                         sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch create (ArenaName)");
                         return true;
@@ -66,7 +66,7 @@ public class hch implements CommandExecutor {
                     //Erstelle eine Arena
                     ArenaWorks.create(p, args[1]);
                     break;
-                case "delete":
+                case "delete": //FERTIG
                     if(args.length < 2) {
                         sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch delete (ArenaName)");
                         return true;
@@ -98,7 +98,17 @@ public class hch implements CommandExecutor {
                     HappyChest.getInstance().delArena(args[1]);
                     HappyChest.getInstance().delRemRequest(p.getName());
                     break;
-                case "start":
+                case "list":
+                    ArenaWorks.listAreas(p);
+                    break;
+                case "info":
+                    if(args.length < 2) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwende /hch info (ArenaName)");
+                        return true;
+                    }
+                    ArenaWorks.infoArea(p, args[1]);
+                    break;
+                case "start": //FERTIG
                     if(args.length < 3) {
                         sendMessage(p, "&f[&2HappyChest&f]&cBitte verwende /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
                         return true;
@@ -117,7 +127,7 @@ public class hch implements CommandExecutor {
                     }
                     
                     int rounds = -1;
-                    if(args.length >= 3) {
+                    if(args.length >= 4) {
                         if(Utils.isNumeric(args[3])) {
                             rounds = Integer.parseInt(args[3]);
                             if(rounds < 1) {
@@ -140,14 +150,44 @@ public class hch implements CommandExecutor {
                 case "end":
                     //Beende Arena
                     break;
-                case "additem":
-                    if(args.length < 2) {
-                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch reloadchest (ArenaName)");
+                case "additem": //FERTIG
+                    if(args.length < 4) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch additem (ArenaName) (Itemname) (Menge)");
                         return true;
                     }
                     //Füge Random Item hinzu
+                    ArenaWorks.addItemToArena(p, args[1], Utils.implodeArray(args, " ", 2));
                     break;
-                case "reloadchest":
+                case "listitems":
+                    if(args.length < 2) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch listitems (ArenaName)");
+                        return true;
+                    }
+                    ArenaWorks.listArenaItems(p, args[1]);
+                    break;
+                case "removeitem": //FERTIG
+                    if(!p.hasPermission("happychest.removeitem") && !p.hasPermission("happychest.*") && !p.isOp()) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
+                        return true;
+                    }
+                    //Lösche Item aus der Random Liste
+                    if(args.length < 2) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch removeitem (ArenaName) (Optional Item-Nr.)");
+                        return true;
+                    }
+                    
+                    if(args.length < 3) {
+                        ArenaWorks.listArenaItems(p, args[1]);
+                        return true;
+                    } else {
+                        if(!Utils.isNumeric(args[2])) {
+                            sendMessage(p, "&f[&2HappyChest&f]&cAn Stelle 3 muss eine Zahl stehen.");
+                            return true;
+                        }
+                        ArenaWorks.removeArenaItem(p, args[1], Integer.parseInt(args[2]));
+                    }
+                    break;
+                case "reloadchest": //FERTIG
                     if(args.length < 2) {
                         sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch reloadchest (ArenaName)");
                         return true;
@@ -169,43 +209,35 @@ public class hch implements CommandExecutor {
                     //Prüfe Arena erneut auf Truhen
                     a.reloadChests(p);
                     break;
-                case "removeitem":
+                case "load": //FERTIG
                     if(!p.hasPermission("happychest.load") && !p.hasPermission("happychest.*") && !p.isOp()) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
+                        return true;
+                    }
+                    ArenaWorks.loadAreas();
+                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden neugeladen.");
+                    break;
+                case "save": //FERTIG
+                    if(!p.hasPermission("happychest.save") && !p.hasPermission("happychest.save") && !p.isOp()) {
+                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas zu speichern.");
+                        return true;
+                    }
+                    ArenaWorks.saveAreas();
+                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden gespeichert.");
+                    break;
+                case "4one":
+                    if(!p.hasPermission("happychest.removeitem") && !p.hasPermission("happychest.*") && !p.isOp()) {
                         sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
                         return true;
                     }
                     //Lösche Item aus der Random Liste
                     if(args.length < 2) {
-                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch removeitem (ArenaName) (Optional Item-Nr.)");
+                        sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch 4one");
                         return true;
                     }
-                    
-                    if(args.length < 3) {
-                        ArenaWorks.listArenaItems(p, args[1]);
-                        return true;
-                    } else {
-                        if(!Utils.isNumeric(args[2])) {
-                            sendMessage(p, "&f[&2HappyChest&f]&cAn Stelle 3 muss eine Zahl stehen.");
-                            return true;
-                        }
-                        ArenaWorks.removeArenaItem(p, args[1], Integer.parseInt(args[2]));
-                    }
+                
+                    ArenaWorks.set4One(p, args[1]);
                     break;
-                case "load":
-                    if(!p.hasPermission("happychest.load") && !p.hasPermission("happychest.*") && !p.isOp()) {
-                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas neuzuladen.");
-                        return true;
-                    }
-                    ArenaWorks.loadAreas(_plugin);
-                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden neugeladen.");
-                    break;
-                case "save":
-                    if(!p.hasPermission("happychest.save") && !p.hasPermission("happychest.save") && !p.isOp()) {
-                        sendMessage(p, "&f[&2HappyChest&f]&cDu hast keine Rechte um die Areas zu speichern.");
-                        return true;
-                    }
-                    ArenaWorks.saveAreas(_plugin);
-                    sendMessage(p, "&f[&2HappyChest&f]&eAlle HappyChest Areas wurden neugeladen.");
                 default:
                     //Unbekannter Begriff an stelle 1
                     sendMessage(p, "&f[&2HappyChest&f]&cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove/load/save)");

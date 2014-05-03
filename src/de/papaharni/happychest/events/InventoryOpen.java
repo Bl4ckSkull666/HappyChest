@@ -150,6 +150,7 @@ public class InventoryOpen implements Listener {
                     return;
                 if(c.getInventory().getContents().length > 0) {
                     HappyChest.getInstance().setReste(b.getKey(), p.getName(), c.getInventory().getContents());
+                    c.getInventory().setContents(new ItemStack[c.getInventory().getSize()]);
                 } else {
                     HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());
                 }

@@ -6,6 +6,8 @@
 
 package de.papaharni.happychest.utils;
 
+import de.papaharni.happychest.HappyChest;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,17 +18,17 @@ import org.bukkit.entity.Player;
  * @author Pappi
  */
 public final class Utils {
-    public static String implodeArray(String[] inputArray, String glueString) {
-        if (inputArray.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(inputArray[0]);
-            for (int i=1; i<inputArray.length; i++) {
-                if(!inputArray[i].isEmpty() && !inputArray[i].contains("") && inputArray[i] != "") {
-                    sb.append(glueString);
-                    sb.append(inputArray[i]);
-                }
+    public static String implodeArray(String[] inputArray, String glueString, int start) {
+        if(inputArray.length > start) {
+            String msg = "";
+            boolean isFirst = true;
+            for (int i=start; i<inputArray.length; i++) {
+                if(!isFirst)
+                    msg += glueString;
+                msg += inputArray[i];
+                isFirst = false;
             }
-            return sb.toString();
+            return msg;
         }
         return "";
     }

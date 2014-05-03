@@ -34,6 +34,11 @@ public final class Items {
             return false;
         }
         
+        if(Material.matchMaterial(args[0]) == null) {
+            HappyChest.getInstance().getLogger().log(Level.INFO, args[0] + " ist kein gultiges Item.");
+            return false;
+        }
+        
         ItemStack i = new ItemStack(Material.matchMaterial(args[0]), Integer.parseInt(args[1]));
         if(i == null) {
             HappyChest.getInstance().getLogger().log(Level.INFO, "Konnte kein Item aus " + str + " erstellen.");

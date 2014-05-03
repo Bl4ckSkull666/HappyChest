@@ -65,14 +65,14 @@ public class HappyChest extends JavaPlugin {
     @Override
     public void onEnable() {
         _wg = getWorldGuard();
-        ArenaWorks.loadAreas(this);
         this.getCommand("hch").setExecutor(new hch(this));
         _instance = this;
+        ArenaWorks.loadAreas();
     }
     
     @Override
     public void onDisable() {
-        ArenaWorks.saveAreas(this);
+        ArenaWorks.saveAreas();
     }
     
     public static HappyChest getInstance() {
