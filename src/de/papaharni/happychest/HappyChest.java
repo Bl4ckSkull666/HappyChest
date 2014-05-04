@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -60,6 +61,8 @@ public class HappyChest extends JavaPlugin {
     private WorldGuardPlugin _wg;
     private static Economy economy = null;
     
+    private Map<String, Enchantment> _ench = new HashMap<>();
+    
     @Override
     public void onEnable() {
         _wg = getWorldGuard();
@@ -68,6 +71,8 @@ public class HappyChest extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
         _instance = this;
         ArenaWorks.loadAreas();
+        
+        fillEnchantments();
     }
     
     @Override
@@ -296,5 +301,33 @@ public class HappyChest extends JavaPlugin {
         }
         if(_areaTask.containsKey(a))
             cancelArenaTask(a);
+    }
+    
+    public Map<String, Enchantment> getEnchants() {
+        return _ench;
+    }
+    
+    public void fillEnchantments() {
+        _ench.put("power", Enchantment.ARROW_DAMAGE);
+        _ench.put("flame", Enchantment.ARROW_FIRE);
+        _ench.put("infinity", Enchantment.ARROW_INFINITE);
+        _ench.put("punch", Enchantment.ARROW_KNOCKBACK);
+        _ench.put("bane_of_arthropods", Enchantment.DAMAGE_ARTHROPODS);
+        _ench.put("smite", Enchantment.DAMAGE_UNDEAD);
+        _ench.put("efficiency", Enchantment.DIG_SPEED);
+        _ench.put("unbreaking", Enchantment.DURABILITY);
+        _ench.put("fire_aspect", Enchantment.FIRE_ASPECT);
+        _ench.put("knockback", Enchantment.KNOCKBACK);
+        _ench.put("fortune", Enchantment.LOOT_BONUS_BLOCKS);
+        _ench.put("looting", Enchantment.LOOT_BONUS_MOBS);
+        _ench.put("respiration", Enchantment.OXYGEN);
+        _ench.put("protection", Enchantment.PROTECTION_ENVIRONMENTAL);
+        _ench.put("blast_protection", Enchantment.PROTECTION_EXPLOSIONS);
+        _ench.put("feather_falling", Enchantment.PROTECTION_FALL);
+        _ench.put("fire_protection", Enchantment.PROTECTION_FIRE);
+        _ench.put("projectile_protection", Enchantment.PROTECTION_PROJECTILE);
+        _ench.put("silk_touch", Enchantment.SILK_TOUCH);
+        _ench.put("thorns", Enchantment.THORNS);
+        _ench.put("aqua_affinity", Enchantment.WATER_WORKER);
     }
 }

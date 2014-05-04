@@ -75,6 +75,7 @@ public class InventoryOpen implements Listener {
                             if(item == null)
                                 continue;
                             items[i] = item;
+                            i++;
                         }
                         Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
                         e.getInventory().setContents(items);

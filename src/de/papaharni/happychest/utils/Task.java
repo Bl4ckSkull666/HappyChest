@@ -35,7 +35,8 @@ public final class Task {
             return null;
         }
         for(Player pl: Bukkit.getOnlinePlayers()) {
-            Utils.sendMessage(pl, "&eIn 2 Minuten beginnt ein HappyChest Event auf der Welt " + HappyChest.getInstance().getArena(a).getPos1().getWorld().getName());
+            if(!pl.getWorld().getUID().equals(HappyChest.getInstance().getArena(a).getPos1().getWorld().getUID()))
+                Utils.sendMessage(pl, "&eIn 2 Minuten beginnt ein HappyChest Event auf der Welt " + HappyChest.getInstance().getArena(a).getPos1().getWorld().getName());
         }
         return Bukkit.getServer().getScheduler().runTaskLater(HappyChest.getInstance(), new setNewRound(a, interval, p, pass, rounds), (60*2*20));
     }
@@ -113,16 +114,28 @@ class setNewRound implements Runnable {
         
         //Erstelle eine neue Item List
         List<String> itemList = getRandomItems(a);
-        
+        HappyChest.getInstance().getLogger().log(Level.INFO, "ItemList hat für diese Runde " + itemList.size() + " items in sich.");
         if(a.getOneForAll()) {
             Block b = Bukkit.getWorld(loc.getWorld().getUID()).getBlockAt(loc);
             if(b != null) {
                 ItemStack[] items = new ItemStack[itemList.size()];
+                int i = 0;
+                for(String str: itemList) {
+                    ItemStack item = Items.getItem(str);
+                    if(item == null)
+                        continue;
+                    items[i] = item;
+                    i++;
+                }
                 if(b.getState() instanceof DoubleChest) {
+                    if(p != null)
+                        Utils.sendMessage(p, "&cEs ist eine DoubleChest");
                     DoubleChest c = (DoubleChest)b.getState();
-                    c.getLeftSide().getInventory().setContents(items);
+                    c.getInventory().setContents(items);
                     b.getState().update();
                 } else if(b.getState() instanceof Chest) {
+                    if(p != null)
+                        Utils.sendMessage(p, "&cEs ist eine Chest");
                     Chest c = (Chest)b.getState();
                     c.getBlockInventory().setContents(items);
                     c.update();
@@ -170,8 +183,12 @@ class setNewRound implements Runnable {
     
     private List<String> getRandomItems(Arena a) {
         List<String> items = a.getItemList();
+        int max = (int)Math.floor((double)(items.size()/2));
+        if(max < 1)
+            max = 1;
+        max = Rnd.get(1,max);
         Collections.shuffle(items);
-        return items.subList(0, ((int) (Math.random() * items.size() * 0.55)));
+        return items.subList(0, max);
     }
     
     public void cancelArena(String a) {
