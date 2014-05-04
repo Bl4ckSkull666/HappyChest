@@ -40,7 +40,7 @@ public class InventoryOpen implements Listener {
         if(e.getInventory().getHolder() instanceof Chest)
             loc = ((Chest)e.getInventory().getHolder()).getLocation();
         else if(e.getInventory().getHolder() instanceof DoubleChest)
-            loc = ((Chest)e.getInventory().getHolder()).getLocation();
+            loc = ((DoubleChest)e.getInventory().getHolder()).getLocation();
         
         if(loc != null) {
             for(Map.Entry<String, Location> en: HappyChest.getInstance().getCurChests().entrySet()) {
@@ -61,37 +61,32 @@ public class InventoryOpen implements Listener {
                     return;
                 }
 
-                ItemStack[] items = getItemStack(en.getKey(), p, e.getInventory().getSize());
-                if(items.length > 0) {
-                    e.getInventory().setContents(items);
-                    Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
+                if(!HappyChest.getInstance().getUsedPlayersList(en.getKey()).equals(p.getName())) {
+                    if(HappyChest.getInstance().hasReste(en.getKey(), p.getName())) {
+                        Utils.sendMessage(p, "&eHier ist das was du noch in der Truhe vergessen hast. Bitte nimm es raus bevor es weg ist.");
+                        e.getInventory().setContents(HappyChest.getInstance().getReste(en.getKey(), p.getName()));
+                        return;
+                    } else {
+                        List<String> list = HappyChest.getInstance().getRoundRewards(en.getKey());
+                        ItemStack[] items = new ItemStack[list.size()];
+                        int i = 0;
+                        for(String str: list) {
+                            ItemStack item = Items.getItem(str);
+                            if(item == null)
+                                continue;
+                            items[i] = item;
+                        }
+                        Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
+                        e.getInventory().setContents(items);
+                        return;
+                    }
                 }
+                Utils.sendMessage(p, "&eOh du hast die Truhe bereits geplündert. Versuchs in der nächste Runde noch einmal.");
+                ItemStack[] items = new ItemStack[e.getInventory().getSize()];
+                e.getInventory().setContents(items);
                 return;
             }
         }
-    }
-    
-    public ItemStack[] getItemStack(String a, Player p, int csize) {
-        if(!HappyChest.getInstance().getUsedPlayersList(a).equals(p.getName())) {
-            if(HappyChest.getInstance().hasReste(a, p.getName())) {
-                Utils.sendMessage(p, "&eHier ist das was du noch in der Truhe vergessen hast. Bitte nimm es raus bevor es weg ist.");
-                return HappyChest.getInstance().getReste(a, p.getName());
-            }
-            List<String> list = HappyChest.getInstance().getRoundRewards(a);
-            ItemStack[] items = new ItemStack[list.size()];
-            int i = 0;
-            for(String str: list) {
-                ItemStack item = Items.getItem(str);
-                if(item == null)
-                    continue;
-                items[i] = item;
-            }
-            HappyChest.getInstance().getUsedPlayersList(a).add(p.getName());
-            return items;
-        }
-        Utils.sendMessage(p, "&eOh du hast die Truhe bereits geplündert. Versuchs in der nächste Runde noch einmal.");
-        ItemStack[] items = new ItemStack[csize];
-        return items;
     }
     
     @EventHandler
@@ -100,38 +95,28 @@ public class InventoryOpen implements Listener {
         if(p == null || !e.getView().getType().equals(InventoryType.CHEST) && !e.getView().getType().equals(InventoryType.ENDER_CHEST)) {
             return;
         }
+        
+        Location loc = null;
 
-        if(e.getInventory().getHolder() instanceof DoubleChest) {
-            DoubleChest c = (DoubleChest)e.getInventory().getHolder();
-            for(Map.Entry<String, Location> b: HappyChest.getInstance().getCurChests().entrySet()) {
-                Arena a = HappyChest.getInstance().getArena(b.getKey());
-                if(!a.isInside(c.getLocation()))
-                    continue;
-                if(b.getValue().distance(c.getLocation()) > 1.0)
-                    return;
-                if(c.getInventory().getContents().length > 0) {
-                    HappyChest.getInstance().setReste(b.getKey(), p.getName(), c.getInventory().getContents());
-                } else {
-                    HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());
-                }
-            }
-            return;
-        }
-        if(e.getInventory().getHolder() instanceof Chest) {
-            Chest c = (Chest)e.getInventory().getHolder();
-            for(Map.Entry<String, Location> b: HappyChest.getInstance().getCurChests().entrySet()) {
-                Arena a = HappyChest.getInstance().getArena(b.getKey());
-                if(!a.isInside(c.getLocation()))
-                    continue;
-                if(b.getValue().distance(c.getLocation()) > 1.0)
-                    return;
-                if(c.getInventory().getContents().length > 0) {
-                    HappyChest.getInstance().setReste(b.getKey(), p.getName(), c.getInventory().getContents());
-                    c.getInventory().setContents(new ItemStack[c.getInventory().getSize()]);
-                } else {
-                    HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());
-                }
-            }
+        if(e.getInventory().getHolder() instanceof DoubleChest)
+            loc = ((DoubleChest)e.getInventory().getHolder()).getLocation();
+        else if(e.getInventory().getHolder() instanceof Chest)
+            loc = ((Chest)e.getInventory().getHolder()).getLocation();
+            
+        for(Map.Entry<String, Location> b: HappyChest.getInstance().getCurChests().entrySet()) {
+            Arena a = HappyChest.getInstance().getArena(b.getKey());
+            if(!a.isInside(loc))
+                continue;
+            if(b.getValue().distance(loc) > 1.0)
+                return;
+            if(a.getOneForAll())
+                return;
+                
+            if(e.getInventory().getContents().length > 0) {
+                HappyChest.getInstance().setReste(b.getKey(), p.getName(), e.getInventory().getContents());
+            } else {
+                HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());
+            }            
             return;
         }
     }

@@ -78,7 +78,7 @@ class setNewRound implements Runnable {
 
     @Override
     public void run() {
-        HappyChest.getInstance().cancelArenaTask(_a);
+        HappyChest.getInstance().clearOnEventEnd(_a);
         Player p = getPlayer(_p);
         if(!HappyChest.getInstance().isArena(_a)) {
             if(p != null)
@@ -101,7 +101,7 @@ class setNewRound implements Runnable {
             return;
         }
         
-        if(_pass > -1 && _pass == _rounds) {
+        if(_rounds > -1 && _pass == _rounds) {
             Utils.worldBroadcast("&cDies war die letze Runde in Arena " + a.getName() + ". Bis zum nächsten mal.", a.getPos1().getWorld().getName());
             ArenaWorks.endArena(_a, p);
             return;
@@ -120,10 +120,12 @@ class setNewRound implements Runnable {
                 ItemStack[] items = new ItemStack[itemList.size()];
                 if(b.getState() instanceof DoubleChest) {
                     DoubleChest c = (DoubleChest)b.getState();
-                    c.getInventory().setContents(items);
+                    c.getLeftSide().getInventory().setContents(items);
+                    b.getState().update();
                 } else if(b.getState() instanceof Chest) {
                     Chest c = (Chest)b.getState();
-                    c.getInventory().setContents(items);
+                    c.getBlockInventory().setContents(items);
+                    c.update();
                 } else {
                     if(p != null)
                         Utils.sendMessage(p, "&cEvent muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
@@ -142,7 +144,7 @@ class setNewRound implements Runnable {
         
         Utils.worldBroadcast("&cEine neue Runde in " + a.getName() + " hat begonnen. Viel Glück beim Truhe suchen.", a.getPos1().getWorld().getName());
         
-        BukkitTask t = Task.nextRound(_a, _interval, _p, _pass, (_rounds+1));
+        BukkitTask t = Task.nextRound(_a, _interval, _p, ((_pass > -1)?(_pass+1):-1), _rounds);
         HappyChest.getInstance().setArenaTask(_a, t);
     }
     

@@ -6,6 +6,7 @@ import de.papaharni.happychest.events.InventoryOpen;
 import de.papaharni.happychest.events.PlayerInteract;
 import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.ArenaWorks;
+import de.papaharni.happychest.utils.Blocks;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,20 +28,21 @@ public class HappyChest extends JavaPlugin {
     private static HappyChest _instance;
     private static boolean _debugMode;
     
-    //Arena Tasks / Arena Name = Task
-    private final Map<String, BukkitTask> _games = new HashMap<>();
-    //Arena / Aktuelle suchende Truhe
-    private final Map<String, Location> _curchests = new HashMap<>();
-    //Arena / Liste der bereits gefundenen Spielernamen
-    private final Map<String, List<String>> _usedPlayers = new HashMap<>();
-    //Arena / Liste der zu erhaltenden Items
-    private final Map<String, List<String>> _roundRewards = new HashMap<>();
-    //
-    private final List<String> _eventChest = new ArrayList<>();
+    //Runden Tasks Speicherung - Speichert den Task jeder Runde Map<Arenaname, Task>
+    private final Map<String, BukkitTask> _areaTask = new HashMap<>();
+    
+    //Reste von Spielern in den Kisten Map<ArenaName,Map<Spielername, ItemStack Array>
     private final Map<String, HashMap<String, ItemStack[]>> _reste = new HashMap<>();
     
-    //Runden Tasks Speicherung
-    private final Map<String, BukkitTask> _areaTask = new HashMap<>();
+    //Arena / Aktuelle suchende Truhe Map<Arenaname, Location der Truhe>
+    private final Map<String, Location> _curchests = new HashMap<>();
+    
+    //Arena / Liste der bereits gefundenen Spielernamen Map<Arenaname, List<Spielername>>
+    private final Map<String, List<String>> _usedPlayers = new HashMap<>();
+    
+    //Arena / Liste der zu erhaltenden Items Map<Arenaname, List<Item String>>
+    private final Map<String, List<String>> _roundRewards = new HashMap<>();
+    
     
     //Zur Markierung falls kein WE vorhanden ist.
     private final List<String> _allowMark = new ArrayList<>();
@@ -275,5 +277,24 @@ public class HappyChest extends JavaPlugin {
     public void setArenaTask(String a, BukkitTask t) {
         cancelArenaTask(a);
         _areaTask.put(a, t);
+    }
+    
+    public void clearOnRoundEnd(String a) {
+        if(_usedPlayers.containsKey(a))
+            _usedPlayers.remove(a);
+        if(_reste.containsKey(a))
+            _reste.remove(a);
+    }
+    
+    public void clearOnEventEnd(String a) {
+        clearOnRoundEnd(a);
+        if(_roundRewards.containsKey(a))
+            _roundRewards.remove(a);
+        if(_curchests.containsKey(a)) {
+            Blocks.clearChest(_curchests.get(a));
+            _curchests.remove(a);
+        }
+        if(_areaTask.containsKey(a))
+            cancelArenaTask(a);
     }
 }

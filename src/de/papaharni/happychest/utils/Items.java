@@ -57,7 +57,7 @@ public final class Items {
                             ItemMeta iml = i.getItemMeta();
                             List<String> lore = new ArrayList<>();
                             for(int b = 0; b < msg.length; b++)
-                                lore.add(msg[b]);
+                                lore.add(msg[b].replaceAll("_", " "));
                             iml.setLore(lore);
                             i.setItemMeta(iml);
                             
@@ -110,7 +110,7 @@ public final class Items {
                             ItemMeta iml = i.getItemMeta();
                             List<String> lore = new ArrayList<>();
                             for(int b = 0; b < msg.length; b++)
-                                lore.add(msg[b]);
+                                lore.add(msg[b].replaceAll("_", " "));
                             iml.setLore(lore);
                             i.setItemMeta(iml);
                             
@@ -121,8 +121,8 @@ public final class Items {
                             i.setItemMeta(imn);
                             break;
                         default:
-                            if(Enchantment.getByName(sargs[0]) != null && isNumeric(sargs[1])) {
-                                i.addEnchantment(Enchantment.getByName(sargs[0]), Integer.parseInt(sargs[1]));
+                            if(Enchantment.getByName(sargs[0].toLowerCase()) != null && isNumeric(sargs[1])) {
+                                i.addEnchantment(Enchantment.getByName(sargs[0].toLowerCase()), Integer.parseInt(sargs[1]));
                             } else {
                                 HappyChest.getInstance().getLogger().log(Level.INFO, "Ignoriere " + sargs[0] + " da es nirgendwo rein passt.");
                             }
