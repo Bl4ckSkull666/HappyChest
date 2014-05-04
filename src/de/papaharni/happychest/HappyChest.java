@@ -279,6 +279,10 @@ public class HappyChest extends JavaPlugin {
         }
     }
     
+    public boolean isArenaTask(String a) {
+        return _areaTask.containsKey(a);
+    }
+    
     public void setArenaTask(String a, BukkitTask t) {
         cancelArenaTask(a);
         _areaTask.put(a, t);

@@ -55,7 +55,7 @@ public class InventoryOpen implements Listener {
                 
                 if(a.getOneForAll()) {
                     Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
-                    if(e.getInventory().getContents().length < 1) {
+                    if(Utils.countItems(e.getInventory().getContents()) < 1) {
                         Utils.sendMessage(p, "&eLeider wurde die Kiste in dieser Runde schon geplündert.");
                     }
                     return;
@@ -113,7 +113,7 @@ public class InventoryOpen implements Listener {
             if(a.getOneForAll())
                 return;
                 
-            if(e.getInventory().getContents().length > 0) {
+            if(Utils.countItems(e.getInventory().getContents()) > 0) {
                 HappyChest.getInstance().setReste(b.getKey(), p.getName(), e.getInventory().getContents());
             } else {
                 HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());

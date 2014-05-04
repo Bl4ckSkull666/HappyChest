@@ -247,6 +247,8 @@ public final class ArenaWorks {
             } catch(IOException ex) {
                 HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte Arena " + e.getKey() + " nicht speichern,", ex);
             }
+            
+            
         }
     }
     

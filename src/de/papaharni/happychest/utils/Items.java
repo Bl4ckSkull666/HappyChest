@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  *
@@ -49,22 +50,22 @@ public final class Items {
         
         if(args.length >= 3) {
             for(int a = 2; a < args.length; a++) {
+                ItemMeta im = i.getItemMeta();
                 String[] sargs = args[a].split(":");
                 if(sargs.length == 2) {
                     switch(sargs[0]) {
                         case "lore":
                             String[] msg = sargs[1].split("\\|");
-                            HappyChest.getInstance().getLogger().log(Level.INFO, "Lore ist " + msg.length + " absaetze lang");
                             if(msg.length > 4)
                                 break;
-                            HappyChest.getInstance().getLogger().log(Level.INFO, "Setze Lore");
                             List<String> lore = new ArrayList<>();
-                            for(int b = 0; b < msg.length; b++)
+                            for(int b = 0; b < msg.length; b++) {
                                 lore.add(ChatColor.translateAlternateColorCodes('&', msg[b].replaceAll("_", " ")));
-                            i.getItemMeta().setLore(lore);
+                            }
+                            im.setLore(lore);
                             break;
                         case "name":
-                            i.getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', sargs[1]));
+                            im.setDisplayName(ChatColor.translateAlternateColorCodes('&', sargs[1]));
                             break;
                         case "heal":
                             if(!Utils.isNumeric(sargs[1]))
@@ -77,17 +78,19 @@ public final class Items {
                             i.setDurability((short)heal);
                         default:
                             if(Enchantment.getByName(sargs[0].toLowerCase()) != null && Utils.isNumeric(sargs[1])) {
-                                i.addEnchantment(Enchantment.getByName(sargs[0].toLowerCase()), Integer.parseInt(sargs[1]));
+                                im.addEnchant(Enchantment.getByName(sargs[0].toLowerCase()), Integer.parseInt(sargs[1]), false);
                             } else if(HappyChest.getInstance().getEnchants().containsKey(sargs[0].toLowerCase()) && Utils.isNumeric(sargs[1])) {
-                                i.addEnchantment(HappyChest.getInstance().getEnchants().get(sargs[0].toLowerCase()), Integer.parseInt(sargs[1]));
+                                im.addEnchant(HappyChest.getInstance().getEnchants().get(sargs[0].toLowerCase()), Integer.parseInt(sargs[1]), false);
                             } else {
                                 HappyChest.getInstance().getLogger().log(Level.INFO, "Ignoriere " + sargs[0] + " da es nirgendwo rein passt.");
                             }
                             break;
                     }
                 }
+                i.setItemMeta(im);
             }
         }
+        HappyChest.getInstance().getLogger().log(Level.INFO, "Die Durability beträgt " + i.getDurability() + ".");
         return i;
     }
 }

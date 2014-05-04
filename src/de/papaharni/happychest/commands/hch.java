@@ -149,6 +149,24 @@ public class hch implements CommandExecutor {
                     break;
                 case "end":
                     //Beende Arena
+                    if(args.length < 2) {
+                        Utils.sendMessage(p, "&cBitte verwende /hch end (ArenaName)");
+                        return true;
+                    }
+                    
+                    if(!HappyChest.getInstance().isArena(args[1])) {
+                        Utils.sendMessage(p, "&cArena Name konnte nicht gefunden werden.");
+                        Utils.sendMessage(p, "&cBitte verwenden /hch end (ArenaName)");
+                        return true;
+                    }
+                    
+                    if(!HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cDiese Arena läuft gerade nicht.");
+                        return true;
+                    }
+                    
+                    Utils.worldBroadcast("Das Event in Arena " + HappyChest.getInstance().getArena(args[1]).getName() + " wurde beendet.", HappyChest.getInstance().getArena(args[1]).getPos1().getWorld().getName());
+                    HappyChest.getInstance().clearOnEventEnd(args[1]);
                     break;
                 case "additem": //FERTIG
                     if(args.length < 4) {

@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -82,5 +83,14 @@ public final class Utils {
         Location max = new Location(loc2.getWorld(), maxX, maxY, maxZ);
         Location[] locs = {min, max};
         return locs;
+    }
+    
+    public static int countItems(ItemStack[] items) {
+        int i = 0;
+        for(ItemStack item: items) {
+            if(item != null)
+                i++;
+        }
+        return i;
     }
 }
