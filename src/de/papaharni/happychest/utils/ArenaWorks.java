@@ -206,6 +206,10 @@ public final class ArenaWorks {
             if(f.getName().startsWith("arena_") && f.getName().endsWith(".yml") && !f.isDirectory()) {
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
                 if(conf.isString("name") && Utils.getLFST(conf.getString("pos1")) != null && Utils.getLFST(conf.getString("pos2")) != null && conf.isList("chests")) {
+                    if(HappyChest.getInstance().isArenaTask(conf.getString("name"))) {
+                        HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte Arena " + conf.getString("name") + " nicht neuladen da diese gerade läuft.");
+                        continue;
+                    }
                     List<Location> chloc = new ArrayList<>();
                     for(String l: conf.getStringList("chests")) {
                         Location loc = Utils.getLFST(l);

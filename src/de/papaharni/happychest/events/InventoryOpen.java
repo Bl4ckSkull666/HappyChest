@@ -46,7 +46,6 @@ public class InventoryOpen implements Listener {
         if(loc != null) {
             for(Map.Entry<String, Location> en: HappyChest.getInstance().getCurChests().entrySet()) {
                 Arena a = HappyChest.getInstance().getArena(en.getKey());
-                HappyChest.getInstance().getLogger().log(Level.INFO, "Chest Open Beginn : " + a.getItemCount());
                 if(!a.isInside(loc))
                     continue;
 

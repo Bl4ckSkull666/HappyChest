@@ -38,10 +38,10 @@ public final class Task {
             if(!pl.getWorld().getUID().equals(HappyChest.getInstance().getArena(a).getPos1().getWorld().getUID()))
                 Utils.sendMessage(pl, "&eIn 2 Minuten beginnt ein HappyChest Event auf der Welt " + HappyChest.getInstance().getArena(a).getPos1().getWorld().getName());
         }
-        return Bukkit.getServer().getScheduler().runTaskLater(HappyChest.getInstance(), new setNewRound(a, interval, p, pass, rounds), (60*2*20));
+        return Bukkit.getServer().getScheduler().runTaskLater(HappyChest.getInstance(), new setNewRound(HappyChest.getInstance().getArena(a), interval, p, pass, rounds), (60*2*20));
     }
     
-    public static BukkitTask nextRound(String a, int interval, String p, int pass, int rounds) {
+    public static BukkitTask nextRound(Arena a, int interval, String p, int pass, int rounds) {
         return Bukkit.getServer().getScheduler().runTaskLater(HappyChest.getInstance(), new setNewRound(a, interval, p, pass, rounds), (interval*20*60));
     }
     
@@ -64,12 +64,12 @@ public final class Task {
 
 class setNewRound implements Runnable {
 
-    private final String _a;
+    private final Arena _a;
     private final int _interval;
     private final String _p;
     private final int _pass;
     private final int _rounds;
-    public setNewRound(String a, int interval, String p, int pass, int rounds) {
+    public setNewRound(Arena a, int interval, String p, int pass, int rounds) {
         _a = a;
         _interval = interval;
         _p = p;
@@ -79,42 +79,35 @@ class setNewRound implements Runnable {
 
     @Override
     public void run() {
-        HappyChest.getInstance().clearOnEventEnd(_a);
+        HappyChest.getInstance().clearOnEventEnd(_a.getName());
         Player p = getPlayer(_p);
-        if(!HappyChest.getInstance().isArena(_a)) {
+        if(_a.getItemCount() < 1) {
             if(p != null)
-                Utils.sendMessage(p, "&cEvent muss beendet werden da Arena verschwunden ist.");
-            HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte Arena " + _a + " nicht starten da diese nicht mehr vorhanden ist.");
-            return;
-        }
-        Arena a = HappyChest.getInstance().getArena(_a);
-        if(a.getItemCount() < 1) {
-            if(p != null)
-                Utils.sendMessage(p, "&cEvent muss beendet werden da Arena " + _a + " keine Items hat. Mindestens 1 benötigt.");
-            HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte keine Items für Arena " + _a + " finden.");
+                Utils.sendMessage(p, "&cEvent muss beendet werden da Arena " + _a.getName() + " keine Items hat. Mindestens 1 benötigt.");
+            HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte keine Items für Arena " + _a.getName() + " finden.");
             return;
         }
         
-        if(a.getChests().size() < 2) {
+        if(_a.getChests().size() < 2) {
             if(p != null)
-                Utils.sendMessage(p, "&cEvent muss beendet werden da Arena " + _a + " keine Truhen mehr hat. Mindestens 2 benötigt.");
-            HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte keine Items für Arena " + _a + " finden.");
+                Utils.sendMessage(p, "&cEvent muss beendet werden da Arena " + _a.getName() + " keine Truhen mehr hat. Mindestens 2 benötigt.");
+            HappyChest.getInstance().getLogger().log(Level.WARNING, "Konnte keine Items für Arena " + _a.getName() + " finden.");
             return;
         }
         
         if(_rounds > -1 && _pass == _rounds) {
-            Utils.worldBroadcast("&cDies war die letze Runde in Arena " + a.getName() + ". Bis zum nächsten mal.", a.getPos1().getWorld().getName());
-            ArenaWorks.endArena(_a, p);
+            Utils.worldBroadcast("&cDies war die letze Runde in Arena " + _a.getName() + ". Bis zum nächsten mal.", _a.getPos1().getWorld().getName());
+            ArenaWorks.endArena(_a.getName(), p);
             return;
         }
         
         //Ermittle neue Chest Location
-        Location loc = getRandomLocation(a);
-        HappyChest.getInstance().getCurChests().put(_a, loc);
+        Location loc = getRandomLocation(_a);
+        HappyChest.getInstance().getCurChests().put(_a.getName(), loc);
         
         //Erstelle eine neue Item List
-        List<String> itemList = getRandomItems(a);
-        if(a.getOneForAll()) {
+        List<String> itemList = getRandomItems(_a);
+        if(_a.getOneForAll()) {
             Block b = Bukkit.getWorld(loc.getWorld().getUID()).getBlockAt(loc);
             if(b != null) {
                 ItemStack[] items = new ItemStack[itemList.size()];
@@ -136,24 +129,24 @@ class setNewRound implements Runnable {
                     c.update();
                 } else {
                     if(p != null)
-                        Utils.sendMessage(p, "&cEvent muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
-                    HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                        Utils.sendMessage(p, "&cEvent muss beendet werden da in Arena " + _a.getName() + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                    HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a.getName() + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
                     return;
                 }
             } else {
                 if(p != null)
-                    Utils.sendMessage(p, "&cEvent muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
-                HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                    Utils.sendMessage(p, "&cEvent muss beendet werden da in Arena " + _a.getName() + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
+                HappyChest.getInstance().getLogger().log(Level.WARNING, "Event muss beendet werden da in Arena " + _a.getName() + " an Position " + loc.getWorld() + ":" + loc.getBlockX() + " , " + loc.getBlockY() + " , " + loc.getBlockZ() + " keine Truhe mehr gefunden wurde.");
                 return;
             }
         } else {
-            HappyChest.getInstance().addRoundRewards(_a, itemList);
+            HappyChest.getInstance().addRoundRewards(_a.getName(), itemList);
         }
         
-        Utils.worldBroadcast("&cEine neue Runde in " + a.getName() + " hat begonnen. Viel Glück beim Truhe suchen.", a.getPos1().getWorld().getName());
+        Utils.worldBroadcast("&cEine neue Runde in " + _a.getName() + " hat begonnen. Viel Glück beim Truhe suchen.", _a.getPos1().getWorld().getName());
         
         BukkitTask t = Task.nextRound(_a, _interval, _p, ((_pass > -1)?(_pass+1):-1), _rounds);
-        HappyChest.getInstance().setArenaTask(_a, t);
+        HappyChest.getInstance().setArenaTask(_a.getName(), t);
     }
     
     private Player getPlayer(String p) {

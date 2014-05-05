@@ -71,6 +71,16 @@ public class hch implements CommandExecutor {
                         return true;
                     }
                     
+                    if(!HappyChest.getInstance().isArena(args[1])) {
+                        Utils.sendMessage(p, "&cKonnte Arena " + args[1] + " nicht finden..");
+                        return true;
+                    }
+                    
+                    if(HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cDu kannst Arena " + args[1] + " nicht Löschen da diese noch läuft.");
+                        return true;
+                    }
+                    
                     //Wurde noch kein Remove beauftragt?
                     if(!HappyChest.getInstance().isRemRequest(p.getName())) {
                         Utils.sendMessage(p, "&cBitte bestätige das Löschen der Arena " + args[1] + " mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden.");
@@ -117,6 +127,11 @@ public class hch implements CommandExecutor {
                     if(!HappyChest.getInstance().isArena(args[1])) {
                         Utils.sendMessage(p, "&cArena Name konnte nicht gefunden werden.");
                         Utils.sendMessage(p, "&cBitte verwenden /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)");
+                        return true;
+                    }
+                    
+                    if(HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cIn Arena " + args[1] + " läuft bereits ein Event.");
                         return true;
                     }
                     
@@ -173,6 +188,15 @@ public class hch implements CommandExecutor {
                         Utils.sendMessage(p, "&cBitte verwenden /hch additem (ArenaName) (Itemname) (Menge)");
                         return true;
                     }
+                    if(!HappyChest.getInstance().isArena(args[1])) {
+                        Utils.sendMessage(p, "&cKonnte Arena " + args[1] + " nicht finden..");
+                        return true;
+                    }
+                    
+                    if(HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cDu kannst Arena " + args[1] + " nicht ändern wenn das Event dort läuft.");
+                        return true;
+                    }
                     //Füge Random Item hinzu
                     ArenaWorks.addItemToArena(p, args[1], Utils.implodeArray(args, " ", 2));
                     break;
@@ -181,9 +205,10 @@ public class hch implements CommandExecutor {
                         Utils.sendMessage(p, "&cBitte verwenden /hch listitems (ArenaName)");
                         return true;
                     }
+                    
                     ArenaWorks.listArenaItems(p, args[1]);
                     break;
-                case "removeitem": //FERTIG
+                case "remitem": //FERTIG
                     if(!p.hasPermission("happychest.removeitem") && !p.hasPermission("happychest.*") && !p.isOp()) {
                         Utils.sendMessage(p, "&cDu hast keine Rechte um die Areas neuzuladen.");
                         return true;
@@ -198,6 +223,16 @@ public class hch implements CommandExecutor {
                         ArenaWorks.listArenaItems(p, args[1]);
                         return true;
                     } else {
+                        if(!HappyChest.getInstance().isArena(args[1])) {
+                            Utils.sendMessage(p, "&cKonnte Arena " + args[1] + " nicht finden..");
+                            return true;
+                        }
+
+                        if(HappyChest.getInstance().isArenaTask(args[1])) {
+                            Utils.sendMessage(p, "&cDu kannst Arena " + args[1] + " nicht ändern wenn das Event dort läuft.");
+                            return true;
+                        }
+                        
                         if(!Utils.isNumeric(args[2])) {
                             Utils.sendMessage(p, "&cAn Stelle 3 muss eine Zahl stehen.");
                             return true;
@@ -217,15 +252,13 @@ public class hch implements CommandExecutor {
                         return true;
                     }
                     
-                    //Hole Arena und prüfe ist nicht null
-                    Arena a = HappyChest.getInstance().getArena(args[1]);
-                    if(a == null) {
-                        Utils.sendMessage(p, "&cKonnte die Arena nicht finden.");
+                    if(HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cDu kannst Arena " + args[1] + " nicht ändern wenn das Event dort läuft.");
                         return true;
                     }
                     
-                    //Prüfe Arena erneut auf Truhen
-                    a.reloadChests(p);
+                    //Hole Arena und prüfe ist nicht null
+                    HappyChest.getInstance().getArena(args[1]).reloadChests(p);
                     break;
                 case "load": //FERTIG
                     if(!p.hasPermission("happychest.load") && !p.hasPermission("happychest.*") && !p.isOp()) {
@@ -250,7 +283,17 @@ public class hch implements CommandExecutor {
                     }
                     //Lösche Item aus der Random Liste
                     if(args.length < 2) {
-                        Utils.sendMessage(p, "&cBitte verwenden /hch 4one");
+                        Utils.sendMessage(p, "&cBitte verwenden /hch 4one (Arenaname)");
+                        return true;
+                    }
+                    
+                    if(!HappyChest.getInstance().isArena(args[1])) {
+                        Utils.sendMessage(p, "&cKonnte Arena " + args[1] + " nicht finden..");
+                        return true;
+                    }
+                    
+                    if(HappyChest.getInstance().isArenaTask(args[1])) {
+                        Utils.sendMessage(p, "&cDu kannst Arena " + args[1] + " nicht ändern wenn das Event dort läuft.");
                         return true;
                     }
                 
