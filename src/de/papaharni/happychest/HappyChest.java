@@ -8,9 +8,11 @@ import de.papaharni.happychest.utils.Arena;
 import de.papaharni.happychest.utils.ArenaWorks;
 import de.papaharni.happychest.utils.Blocks;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
@@ -39,7 +41,7 @@ public class HappyChest extends JavaPlugin {
     private final Map<String, Location> _curchests = new HashMap<>();
     
     //Arena / Liste der bereits gefundenen Spielernamen Map<Arenaname, List<Spielername>>
-    private final Map<String, List<String>> _usedPlayers = new HashMap<>();
+    private final Map<String, Collection<String>> _usedPlayers = new HashMap<>();
     
     //Arena / Liste der zu erhaltenden Items Map<Arenaname, List<Item String>>
     private final Map<String, List<String>> _roundRewards = new HashMap<>();
@@ -216,7 +218,7 @@ public class HappyChest extends JavaPlugin {
         return _curchests;
     }
     
-    public List<String> getUsedPlayersList(String a) {
+    public Collection<String> getUsedPlayersList(String a) {
         if(!_usedPlayers.containsKey(a.toLowerCase()))
             addUsedPlayersList(a.toLowerCase());
         return _usedPlayers.get(a.toLowerCase());
@@ -232,19 +234,19 @@ public class HappyChest extends JavaPlugin {
     }
     
     public List<String> getRoundRewards(String a) {
-        if(!_usedPlayers.containsKey(a.toLowerCase())) {
+        if(!_roundRewards.containsKey(a.toLowerCase())) {
             List<String> list = new ArrayList<>();
             addRoundRewards(a.toLowerCase(), list);
         }
-        return _usedPlayers.get(a.toLowerCase());
+        return _roundRewards.get(a.toLowerCase());
     }
     
     public void addRoundRewards(String a, List<String> list) {
-        _usedPlayers.put(a.toLowerCase(), list);
+        _roundRewards.put(a.toLowerCase(), list);
     }
     
     public void delRoundRewards(String a) {
-        _usedPlayers.remove(a.toLowerCase());
+        _roundRewards.remove(a.toLowerCase());
     }
     
     public boolean hasReste(String a, String p) {
@@ -270,6 +272,14 @@ public class HappyChest extends JavaPlugin {
         _reste.get(a).put(p, items);
     }
     
+    public void delResteByPlayer(String a, String p) {
+        if(!_reste.containsKey(a))
+            return;
+        if(!_reste.get(a).containsKey(p))
+            return;
+        _reste.get(a).remove(p);
+    }
+    
     public void cancelArenaTask(String a) {
         if(_areaTask.containsKey(a)) {
             if(_areaTask.get(a) != null) {
@@ -289,8 +299,7 @@ public class HappyChest extends JavaPlugin {
     }
     
     public void clearOnRoundEnd(String a) {
-        if(_usedPlayers.containsKey(a))
-            _usedPlayers.remove(a);
+        delUsedPlayersList(a);
         if(_reste.containsKey(a))
             _reste.remove(a);
     }

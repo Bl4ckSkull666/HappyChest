@@ -12,6 +12,7 @@ import de.papaharni.happychest.utils.Items;
 import de.papaharni.happychest.utils.Utils;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -45,6 +46,7 @@ public class InventoryOpen implements Listener {
         if(loc != null) {
             for(Map.Entry<String, Location> en: HappyChest.getInstance().getCurChests().entrySet()) {
                 Arena a = HappyChest.getInstance().getArena(en.getKey());
+                HappyChest.getInstance().getLogger().log(Level.INFO, "Chest Open Beginn : " + a.getItemCount());
                 if(!a.isInside(loc))
                     continue;
 
@@ -61,10 +63,12 @@ public class InventoryOpen implements Listener {
                     return;
                 }
 
-                if(!HappyChest.getInstance().getUsedPlayersList(en.getKey()).equals(p.getName())) {
+                if(!HappyChest.getInstance().getUsedPlayersList(en.getKey()).contains(p.getName())) {
                     if(HappyChest.getInstance().hasReste(en.getKey(), p.getName())) {
                         Utils.sendMessage(p, "&eHier ist das was du noch in der Truhe vergessen hast. Bitte nimm es raus bevor es weg ist.");
                         e.getInventory().setContents(HappyChest.getInstance().getReste(en.getKey(), p.getName()));
+                        HappyChest.getInstance().delResteByPlayer(en.getKey(), p.getName());
+                        HappyChest.getInstance().getLogger().log(Level.INFO, "Chest Open Rest : " + a.getItemCount());
                         return;
                     } else {
                         List<String> list = HappyChest.getInstance().getRoundRewards(en.getKey());
@@ -79,12 +83,14 @@ public class InventoryOpen implements Listener {
                         }
                         Utils.sendMessage(p, "&eGlückwunsch , du hast die richtige Truhe gefunden.");
                         e.getInventory().setContents(items);
+                        HappyChest.getInstance().getLogger().log(Level.INFO, "Chest Open First : " + a.getItemCount());
                         return;
                     }
                 }
                 Utils.sendMessage(p, "&eOh du hast die Truhe bereits geplündert. Versuchs in der nächste Runde noch einmal.");
                 ItemStack[] items = new ItemStack[e.getInventory().getSize()];
                 e.getInventory().setContents(items);
+                HappyChest.getInstance().getLogger().log(Level.INFO, "Chest Open End : " + a.getItemCount());
                 return;
             }
         }
@@ -108,16 +114,19 @@ public class InventoryOpen implements Listener {
             Arena a = HappyChest.getInstance().getArena(b.getKey());
             if(!a.isInside(loc))
                 continue;
+            
             if(b.getValue().distance(loc) > 1.0)
                 return;
+            
             if(a.getOneForAll())
                 return;
-                
+            
             if(Utils.countItems(e.getInventory().getContents()) > 0) {
                 HappyChest.getInstance().setReste(b.getKey(), p.getName(), e.getInventory().getContents());
+                HappyChest.getInstance().getUsedPlayersList(b.getKey()).remove(p.getName());
             } else {
                 HappyChest.getInstance().getUsedPlayersList(b.getKey()).add(p.getName());
-            }            
+            }
             return;
         }
     }

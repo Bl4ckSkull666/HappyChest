@@ -114,7 +114,6 @@ class setNewRound implements Runnable {
         
         //Erstelle eine neue Item List
         List<String> itemList = getRandomItems(a);
-        HappyChest.getInstance().getLogger().log(Level.INFO, "ItemList hat für diese Runde " + itemList.size() + " items in sich.");
         if(a.getOneForAll()) {
             Block b = Bukkit.getWorld(loc.getWorld().getUID()).getBlockAt(loc);
             if(b != null) {
@@ -128,14 +127,10 @@ class setNewRound implements Runnable {
                     i++;
                 }
                 if(b.getState() instanceof DoubleChest) {
-                    if(p != null)
-                        Utils.sendMessage(p, "&cEs ist eine DoubleChest");
                     DoubleChest c = (DoubleChest)b.getState();
                     c.getInventory().setContents(items);
                     b.getState().update();
                 } else if(b.getState() instanceof Chest) {
-                    if(p != null)
-                        Utils.sendMessage(p, "&cEs ist eine Chest");
                     Chest c = (Chest)b.getState();
                     c.getBlockInventory().setContents(items);
                     c.update();

@@ -90,7 +90,6 @@ public final class Items {
                 i.setItemMeta(im);
             }
         }
-        HappyChest.getInstance().getLogger().log(Level.INFO, "Die Durability beträgt " + i.getDurability() + ".");
         return i;
     }
 }

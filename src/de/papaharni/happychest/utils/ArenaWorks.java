@@ -111,7 +111,6 @@ public final class ArenaWorks {
             return;
         }
         
-        Utils.sendMessage(p, "&cListe alle " + area.getItemCount() + " Items für Arena " + area.getName() + " auf.");
         List<String> list = HappyChest.getInstance().getArena(a).getItemList();
         for(int i = 1; i <= list.size(); i++) {
             if(i % 2 == 0) {
@@ -154,7 +153,6 @@ public final class ArenaWorks {
             Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
             return;
         }
-        
         HappyChest.getInstance().cancelArenaTask(a);
     }
     
