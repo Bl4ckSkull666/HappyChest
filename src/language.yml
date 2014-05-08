@@ -1,0 +1,67 @@
+lang:
+  cmdOnlyPlayer: "Dieser Befehl kann nur von Spielern ausgeführt werden."
+  cmdNoRights: "&cDu hast nicht die erforderlichen Rechte um diesen Befehl zu verwenden."
+  
+  #Makierungs Meldungen
+  cmdDisMark: "&eDas Makieren wurde deaktiviert."
+  cmdWEMark: "&eVerwende bitte nun WorldEdit zum makieren."
+  cmdGSMark: "&eVerwende bitte ein Gold Schwert zum makieren."
+  
+  
+  #Erstellungs Meldungen
+  cmdUseCreate: "&cBitte verwenden /hch create (ArenaName)"
+  areaExist: "&eEs existiert bereits eine Arena mit dem Namen %arena%."
+  noMarkAllow: "&eDu hast keine Makier Erlaubnis."
+  noWGSelection: "&eEs fehlen die Makierungen um eine Arena zu erstellen."
+  noChestInMark: "&eEs sind %total% Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich um eine Arena zu erstellen."
+  createSuccessful: "&eArena %arena% wurde erfolgreich erstellt."
+  noSelection: "&eEs fehlen die Makierungen um eine Arena zu erstellen."
+  
+  #Löschungs Meldungen
+  cmdUseDelete: "&cBitte verwenden /hch delete (ArenaName)"
+  cmdReqDelete: "&cBitte bestätige das Löschen der Arena %arena% mit der erneuten Eingabe des Befehls innerhalb von 30 Sekunden."
+  cmdOthDelete: "&cDu hast einen neuen Löschantrag für die Arena %arena% gestellt."
+  cmdTimDelete: "&cDu hast zu lange für deine Löschbestaetigung gebraucht."
+  cmdSucDelete: "&cArena wurde erfolgreich gelöscht."
+  
+  #Info Meldungen
+  cmdUseInfo: "&cBitte verwende /hch info (ArenaName)"
+  
+  #Start Meldungen
+  cmdUseStart: "&cBitte verwende /hch start (ArenaName) (Interval in Minuten) (Optional Max. Runden)"
+  cmdWroIntStart: "&cDer Interval muss eine Nummer sein."
+  cmdIntToLowStart: "&cDer Interval muss groesser oder gleich 1 sein."
+  cmdRoNoNumStart: "&cDie Runden Anzahl muss eine Zahl sein/Rundenzahl muss groesser gleich 1 sein."
+  cmdAdminStart: "&eDie Erste Runde geht in 2 Minuten los."
+  cmdPplStart: "&eIn 2 Minuten startet in Arena %arena% eine Schatzjagt."
+  
+  #End Meldungen
+  cmdUseEnd: "&cBitte verwende /hch end (ArenaName)"
+  cmdAdminEnd: "Das Event in Arena %arena% wurde beendet."
+  
+  #Add Item Meldungen
+  cmdUseAddItem: "&cBitte verwenden /hch additem (ArenaName) (Itemname) (Menge) (Item Optionen sind Optional)"
+  
+  #ListItem Meldungen
+  cmdUseListItem: "&cBitte verwenden /hch listitems (ArenaName)"
+  
+  #Rem Item Meldunge
+  cmdUseRemItem: "&cBitte verwenden /hch remitem (ArenaName) (ItemId)"
+  cmdNeNoItem: "&cAn 3.Stelle MUSS eine Zahl stehen."
+  
+  #Reload Chest Meldungen
+  cmdUseChReload: "&cBitte verwenden /hch reloadchest (ArenaName)"
+  
+  #4One Meldungen
+  cmdSet4One: "&cBitte verwenden /hch 4one (Arenaname)"
+
+  #Load/Save Meldungen
+  cmdLoadArea: "&eAlle HappyChest Areas wurden neugeladen."
+  cmdSaveArea: "&eAlle HappyChest Areas wurden gespeichert."
+  
+  #Allgemeine Meldungen
+  cmdNoArena: "&cKonnte Arena %arena% nicht finden."
+  cmdRunArena: "&cDu kannst Arena %arena% nicht Löschen da diese noch laeuft."
+  noPerms: "&cDu hast keine Rechte um /hch %cmd% zu nutzen."
+  
+  cmdUse: "&cBitte verwenden /hch (mark/create/delete/start/end/list/additem/listitems/remitem/reloadchest/4one/load/save)"

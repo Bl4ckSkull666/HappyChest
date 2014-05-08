@@ -25,19 +25,19 @@ import org.bukkit.entity.Player;
 public final class ArenaWorks {
     public static void create(Player p, String a) {
         if(HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&eEs existiert bereits eine Arena mit dem Namen " + a + ". Verwende /hch redefine (Arenaname)");
+            Utils.sendMessage(p, HappyChest.getLang().getString("areaExist").replace("%arena%", a));
             return;
         }
         
         if(!HappyChest.getInstance().isAllowMarking(p.getName())) {
-            Utils.sendMessage(p, "&eDu hast keine Makier Erlaubnis.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noMarkAllow"));
             return;
         }
         
         if(HappyChest.getInstance().getWG() != null) {
             try {
                 if(HappyChest.getInstance().getWG().getWorldEdit().getSelection(p).getMinimumPoint() == null || HappyChest.getInstance().getWG().getWorldEdit().getSelection(p).getMaximumPoint() == null) {
-                    Utils.sendMessage(p, "&eEs fehlen die Makierungen um eine Arena zu erstellen.");
+                    Utils.sendMessage(p, HappyChest.getLang().getString("noWGSelection"));
                     return;
                 }
                 
@@ -46,21 +46,21 @@ public final class ArenaWorks {
                 int total = HappyChest.getInstance().getWG().getWorldEdit().getSelection(p).getArea();
                 
                 if(chests.size() < 2) {
-                    Utils.sendMessage(p, "&eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich um eine Arena zu erstellen.");
+                    Utils.sendMessage(p, HappyChest.getLang().getString("noChestInMark").replace("%total%", String.valueOf(total)));
                     return;
                 }
                 
                 
                 Arena ar = new Arena(a, loc[0], loc[1], chests);
                 HappyChest.getInstance().addArena(ar);
-                Utils.sendMessage(p, "&eArena " + a + " wurde erfolgreich erstellt.");
+                Utils.sendMessage(p, HappyChest.getLang().getString("createSuccessful").replace("%arena%", a));
             } catch (Exception ex) {
-                Utils.sendMessage(p, "Kann es sein das du keine Region selected hast?");
+                Utils.sendMessage(p, HappyChest.getLang().getString("noWGSelection"));
                 return;
             }
         } else {
             if(!HappyChest.getInstance().isMarking(p.getName(), "left") || !HappyChest.getInstance().isMarking(p.getName(), "right")) {
-                Utils.sendMessage(p, "&eEs fehlen die Makierungen um eine Arena zu erstellen.");
+                Utils.sendMessage(p, HappyChest.getLang().getString("noSelection"));
                 return;
             }
             
@@ -72,15 +72,16 @@ public final class ArenaWorks {
             List<Location> chests = Blocks.getChestsListS(loc[0], loc[1]);
 
             if(chests.size() < 2) {
-                Utils.sendMessage(p, "&eEs sind " + String.valueOf(total) + " Blöcke makiert aber es fehlen mindestens 2 Truhen aktuell in diesem Bereich.");
+                Utils.sendMessage(p, HappyChest.getLang().getString("noChestInMark").replace("%total%", String.valueOf(total)));
                 return;
             }
             
             Arena ar = new Arena(a, loc[0], loc[1], chests);
             HappyChest.getInstance().addArena(ar);
-            Utils.sendMessage(p, "&eArena " + a + " wurde erfolgreich erstellt.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("createSuccessful").replace("%arena%", a));
         }
         HappyChest.getInstance().delMarking(p.getName(), "all");
+        HappyChest.getInstance().denyMarking(p.getName());
     }
     
     public static boolean addItemToArena(Player p, String a, String aitem) {

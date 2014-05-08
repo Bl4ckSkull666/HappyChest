@@ -64,9 +64,12 @@ public class HappyChest extends JavaPlugin {
     private static Economy economy = null;
     
     private Map<String, Enchantment> _ench = new HashMap<>();
+    private static language _lang;
     
     @Override
     public void onEnable() {
+        _lang = new language();
+        _lang.load();
         _wg = getWorldGuard();
         this.getCommand("hch").setExecutor(new hch(this));
         getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
@@ -109,6 +112,11 @@ public class HappyChest extends JavaPlugin {
     public WorldGuardPlugin getWG() {
         return _wg;
     }
+    
+    public static language getLang() {
+        return _lang;
+    }
+         
     
     public boolean isAllowMarking(String p) {
         return _allowMark.contains(p)?true:false;

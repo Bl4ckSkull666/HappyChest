@@ -6,6 +6,7 @@
 
 package de.papaharni.happychest.utils;
 
+import de.papaharni.happychest.HappyChest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -92,5 +93,13 @@ public final class Utils {
                 i++;
         }
         return i;
+    }
+    
+    public static boolean hasPerm(Player p, String perm) {
+        if(!p.hasPermission("happychest." + perm) || !p.hasPermission("happychest.*") || !p.isOp()) {
+            sendMessage(p, HappyChest.getLang().getString("noPerms"));
+            return false;
+        }
+        return true;
     }
 }
