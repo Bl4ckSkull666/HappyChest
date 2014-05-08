@@ -68,13 +68,12 @@ public class HappyChest extends JavaPlugin {
     
     @Override
     public void onEnable() {
+        _instance = this;
         _lang = new language();
-        _lang.load();
         _wg = getWorldGuard();
         this.getCommand("hch").setExecutor(new hch(this));
         getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
-        _instance = this;
         ArenaWorks.loadAreas();
         
         fillEnchantments();

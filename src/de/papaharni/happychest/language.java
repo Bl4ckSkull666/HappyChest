@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.papaharni.happychest;
 
 import java.io.File;
@@ -21,10 +15,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author Pappi
  */
-public class language {    
+public class language {
     private final Map<String, String> _lang = new HashMap<>();
-    public void load() {
-        copyResource("/src/language.yml", new File("language.yml"));
+    
+    public language() {
+        load();
+    }
+    
+    public String getString(String key) {
+        return (_lang.containsKey(key)?_lang.get(key):"No Message for " + key + " is set yet.");
+    }
+    
+    private void load() {
+        copyResource("/language.yml", new File(HappyChest.getInstance().getDataFolder(), "language.yml"));
         File file = new File(HappyChest.getInstance().getDataFolder(), "language.yml");
         FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
         for(String key : conf.getConfigurationSection("lang").getKeys(false)) {
@@ -32,11 +35,7 @@ public class language {
         }
     }
     
-    public String getString(String key) {
-        return (_lang.containsKey(key)?_lang.get(key):"No Message for " + key + " is set yet.");
-    }
-    
-    public static void copyResource(String internalPath, File externalFile) {
+    private static void copyResource(String internalPath, File externalFile) {
         try {
             final InputStream stream = language.class.getResourceAsStream(internalPath);
             if(!externalFile.exists()) {
@@ -51,11 +50,11 @@ public class language {
                 stream.close();
             }
         } catch (IOException ex) {
-            HappyChest.getInstance().getLogger().log(Level.SEVERE, null, ex);
+            HappyChest.getInstance().getLogger().log(Level.SEVERE, "Fehler beim auslesen der languange.yml. Bitte ggf aus der jar file manuell herauskopieren.", ex);
         }
     }
 
-    public static String getResource(String internalPath) {
+    private static String getResource(String internalPath) {
         final InputStream stream = language.class.getResourceAsStream(internalPath);
         final Scanner sc = new Scanner(stream);
         final StringBuilder sb = new StringBuilder();
