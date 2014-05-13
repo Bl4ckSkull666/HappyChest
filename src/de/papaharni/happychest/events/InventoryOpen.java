@@ -24,10 +24,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-/**
- *
- * @author Pappi
- */
 public class InventoryOpen implements Listener {
     
     @EventHandler
