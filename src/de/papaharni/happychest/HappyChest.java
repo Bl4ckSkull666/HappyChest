@@ -68,6 +68,9 @@ public class HappyChest extends JavaPlugin {
     
     @Override
     public void onEnable() {
+        if(!this.getDataFolder().exists()) {
+            this.getDataFolder().mkdir();
+        }
         _instance = this;
         _lang = new language();
         _wg = getWorldGuard();
@@ -349,5 +352,6 @@ public class HappyChest extends JavaPlugin {
         _ench.put("silk_touch", Enchantment.SILK_TOUCH);
         _ench.put("thorns", Enchantment.THORNS);
         _ench.put("aqua_affinity", Enchantment.WATER_WORKER);
+        _ench.put("sharpness", Enchantment.DAMAGE_ALL);
     }
 }

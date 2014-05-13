@@ -36,13 +36,13 @@ public final class Items {
             HappyChest.getInstance().getLogger().log(Level.INFO, args[1] + " muss eine Zahl sein");
             return null;
         }
-        
-        if(Material.matchMaterial(args[0]) == null) {
-            HappyChest.getInstance().getLogger().log(Level.INFO, args[0] + " ist kein gultiges Item.");
+        String[] itemname = args[0].split("\\:");
+        if(Material.matchMaterial(itemname[0]) == null) {
+            HappyChest.getInstance().getLogger().log(Level.INFO, itemname[0] + " ist kein gultiges Item.");
             return null;
         }
         
-        ItemStack i = new ItemStack(Material.matchMaterial(args[0]), Integer.parseInt(args[1]));
+        ItemStack i = new ItemStack(Material.matchMaterial(itemname[0]), Integer.parseInt(args[1]));
         if(i == null) {
             HappyChest.getInstance().getLogger().log(Level.INFO, "Konnte kein Item aus " + str + " erstellen.");
             return null;

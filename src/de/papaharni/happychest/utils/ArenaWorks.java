@@ -86,29 +86,29 @@ public final class ArenaWorks {
     
     public static boolean addItemToArena(Player p, String a, String aitem) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return false;
         }
         
         if(!Items.isItem(aitem)) {
-            Utils.sendMessage(p, "&cEs ist ein Fehler in dem Item. Bitte prüfe dies.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoItem"));
             return false;
         }
         
         HappyChest.getInstance().getArena(a).addItem(aitem);
-        Utils.sendMessage(p, "&eItem wurde erfolgreich zu Arena hinzugefügt.");
+        Utils.sendMessage(p, HappyChest.getLang().getString("cmdSuccessItem"));
         return false;
     }
     
     public static void listArenaItems(Player p, String a) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return;
         }
         
         Arena area = HappyChest.getInstance().getArena(a);
         if(area.getItemCount() < 1) {
-            Utils.sendMessage(p, "&cArena " + area.getName() + " besitzt aktuell keine Items.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoListItem").replace("%arena%", area.getName()));
             return;
         }
         
@@ -120,38 +120,38 @@ public final class ArenaWorks {
                 Utils.sendMessage(p, "&o" + i + ". &r&8" + list.get(i-1));
             }
         }
-        Utils.sendMessage(p, "&cVerwende /hch removeitem " + area.getName() + " (id)");
+        Utils.sendMessage(p, HappyChest.getLang().getString("cmdUseRemItem"));
     }
     
     public static void removeArenaItem(Player p, String a, int iid) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return;
         }
         
         Arena area = HappyChest.getInstance().getArena(a);
         if(area.getItemCount() < 1) {
-            Utils.sendMessage(p, "&cArena " + area.getName() + " besitzt aktuell keine Items.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoListItem").replace("%arena%", area.getName()));
             return;
         }
         
         if(iid < 1) {
-            Utils.sendMessage(p, "&cBitte gib eine Zahl zwischen 1 und " + area.getItemCount() + " aus.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("cmdCountItem").replace("%total%", String.valueOf(area.getItemCount())));
             return;
         }
         
         if(area.getItemCount() < iid) {
-            Utils.sendMessage(p, "&cArena " + area.getName() + " besitzt keine " + iid + " Items. Bitte verwende eine kleinere Zahl.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("cmdLowerItem").replace("%id%", String.valueOf(iid)).replace("%arena%", area.getName()));
             return;
         }
         
         HappyChest.getInstance().getArena(a).getItemList().remove((iid-1));
-        Utils.sendMessage(p, "&cItem " + iid + " wurde erfolgreich gelöscht.");
+        Utils.sendMessage(p, HappyChest.getLang().getString("cmdSuccessDelItem").replace("%id%", String.valueOf(iid)));
     }
     
     public static void endArena(String a, Player p) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return;
         }
         HappyChest.getInstance().cancelArenaTask(a);
@@ -159,7 +159,7 @@ public final class ArenaWorks {
     
     public static void set4One(Player p, String a) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return;
         }
         if(HappyChest.getInstance().getArena(a).getOneForAll()) {
@@ -182,7 +182,7 @@ public final class ArenaWorks {
     
     public static void infoArea(Player p, String a) {
         if(!HappyChest.getInstance().isArena(a)) {
-            Utils.sendMessage(p, "&cDie angegebene Arena wurde nicht gefunden.");
+            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", a));
             return;
         }
         

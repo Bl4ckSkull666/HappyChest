@@ -174,6 +174,9 @@ class setNewRound implements Runnable {
         int max = (int)Math.floor((double)(items.size()/2));
         if(max < 1)
             max = 1;
+        if(max > 3)
+            max = 3;
+        
         max = Rnd.get(1,max);
         Collections.shuffle(items);
         return items.subList(0, max);

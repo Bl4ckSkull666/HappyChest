@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
@@ -85,5 +86,11 @@ public class PlayerInteract implements Listener {
                 Utils.sendMessage(p, "$f[$2HappyChest$f]$eEs sind " + String.valueOf(total) + " Blöcke makiert mit insgesamt " + String.valueOf(chests) + " Truhen.");
             }
         }
+    }
+    
+    public void onPlayerMove(PlayerMoveEvent e) {
+    //Prüfe ob spieler in Arena ist /
+    //Ist e.getFrom() an Spawn Position dann setzte e.getTo() zu e.getFrom()
+    //e.setTo(e.getFrom());
     }
 }

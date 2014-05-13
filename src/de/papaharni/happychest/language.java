@@ -11,10 +11,6 @@ import java.util.logging.Level;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-/**
- *
- * @author Pappi
- */
 public class language {
     private final Map<String, String> _lang = new HashMap<>();
     

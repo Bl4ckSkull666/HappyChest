@@ -75,12 +75,12 @@ public class hch implements CommandExecutor {
                     }
                     
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
                     if(HappyChest.getInstance().isArenaTask(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
@@ -135,13 +135,13 @@ public class hch implements CommandExecutor {
                     }
                     
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         Utils.sendMessage(p, HappyChest.getLang().getString("cmdUseStart"));
                         return true;
                     }
                     
                     if(HappyChest.getInstance().isArenaTask(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
@@ -173,7 +173,7 @@ public class hch implements CommandExecutor {
                     Utils.sendMessage(p, HappyChest.getLang().getString("cmdAdminStart"));
                     for(Player pl: Bukkit.getOnlinePlayers()) {
                         if(pl != p) {
-                            Utils.sendMessage(pl, HappyChest.getLang().getString("cmdPStart").replace("%arena%", args[1]));
+                            Utils.sendMessage(pl, HappyChest.getLang().getString("cmdPplStart").replace("%arena%", args[1]));
                         }
                     }
                     //Starte eine Runde in Arena
@@ -188,7 +188,7 @@ public class hch implements CommandExecutor {
                     }
                     
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         Utils.sendMessage(p, HappyChest.getLang().getString("cmdUseEnd"));
                         return true;
                     }
@@ -210,12 +210,12 @@ public class hch implements CommandExecutor {
                         return true;
                     }
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
                     if(HappyChest.getInstance().isArenaTask(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                         return true;
                     }
                     //Füge Random Item hinzu
@@ -230,7 +230,7 @@ public class hch implements CommandExecutor {
                         return true;
                     }
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
@@ -250,12 +250,12 @@ public class hch implements CommandExecutor {
                         return true;
                     } else {
                         if(!HappyChest.getInstance().isArena(args[1])) {
-                            Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                            Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                             return true;
                         }
 
                         if(HappyChest.getInstance().isArenaTask(args[1])) {
-                            Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                            Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                             return true;
                         }
                         
@@ -277,12 +277,12 @@ public class hch implements CommandExecutor {
                     
                     //Prüfe ob Arena vorhanden ist
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
                     if(HappyChest.getInstance().isArenaTask(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
@@ -314,12 +314,12 @@ public class hch implements CommandExecutor {
                     }
                     
                     if(!HappyChest.getInstance().isArena(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdNoArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("noArena").replace("%arena%", args[1]));
                         return true;
                     }
                     
                     if(HappyChest.getInstance().isArenaTask(args[1])) {
-                        Utils.sendMessage(p, HappyChest.getLang().getString("cmdRunArena").replace("%arena%", args[1]));
+                        Utils.sendMessage(p, HappyChest.getLang().getString("runArena").replace("%arena%", args[1]));
                         return true;
                     }
                 
@@ -327,13 +327,13 @@ public class hch implements CommandExecutor {
                     break;
                 default:
                     //Unbekannter Begriff an stelle 1
-                    Utils.sendMessage(p, "&cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove/load/save)");
+                    Utils.sendMessage(p, HappyChest.getLang().getString("cmdUse"));
                     break;
             }
             return true;
         }
         //Argument(e) vergessen
-        Utils.sendMessage(p, "&cBitte verwenden /hch (mark/create/delete/start/end/add/reloadchest/remove)");
+        Utils.sendMessage(p, HappyChest.getLang().getString("cmdUse"));
         return true;
     }
     

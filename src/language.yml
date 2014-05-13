@@ -7,7 +7,6 @@ lang:
   cmdWEMark: "&eVerwende bitte nun WorldEdit zum makieren."
   cmdGSMark: "&eVerwende bitte ein Gold Schwert zum makieren."
   
-  
   #Erstellungs Meldungen
   cmdUseCreate: "&cBitte verwenden /hch create (ArenaName)"
   areaExist: "&eEs existiert bereits eine Arena mit dem Namen %arena%."
@@ -41,13 +40,20 @@ lang:
   
   #Add Item Meldungen
   cmdUseAddItem: "&cBitte verwenden /hch additem (ArenaName) (Itemname) (Menge) (Item Optionen sind Optional)"
+  cmdNoItem: "&cEs ist ein Fehler in dem Item. Bitte prüfe dies."
+  cmdSuccessItem: "&eItem wurde erfolgreich zu Arena hinzugefügt."
+  
   
   #ListItem Meldungen
   cmdUseListItem: "&cBitte verwenden /hch listitems (ArenaName)"
+  cmdNoListItem: "&cArena %arena% besitzt aktuell keine Items."
   
   #Rem Item Meldunge
-  cmdUseRemItem: "&cBitte verwenden /hch remitem (ArenaName) (ItemId)"
+  cmdUseRemItem: "&cBitte verwenden /hch remitem (ArenaName) (Id)"
+  cmdCountItem: "&cBitte gib eine Zahl zwischen 1 und %total% aus."
+  cmdLowerItem: "&cArena %arena% besitzt keine %id% Items. Bitte verwende eine kleinere Zahl."
   cmdNeNoItem: "&cAn 3.Stelle MUSS eine Zahl stehen."
+  cmdSuccessDelItem: "&cItem %id% wurde erfolgreich gelöscht." 
   
   #Reload Chest Meldungen
   cmdUseChReload: "&cBitte verwenden /hch reloadchest (ArenaName)"
@@ -60,8 +66,8 @@ lang:
   cmdSaveArea: "&eAlle HappyChest Areas wurden gespeichert."
   
   #Allgemeine Meldungen
-  cmdNoArena: "&cKonnte Arena %arena% nicht finden."
-  cmdRunArena: "&cDu kannst Arena %arena% nicht Löschen da diese noch laeuft."
+  noArena: "&cKonnte Arena %arena% nicht finden."
+  runArena: "&cDu kannst Arena %arena% nicht Löschen da diese noch laeuft."
   noPerms: "&cDu hast keine Rechte um /hch %cmd% zu nutzen."
   
   cmdUse: "&cBitte verwenden /hch (mark/create/delete/start/end/list/additem/listitems/remitem/reloadchest/4one/load/save)"
